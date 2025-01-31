@@ -1,0 +1,131 @@
+#home-cont {
+    background-color: #000000;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #home-cont #myname h1 {
+    font-size: 20px;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    padding: 0;
+    margin: 0;
+    color: #fcfdffad;
+  }
+  
+  #menuicon {
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 24px;
+    display: none; 
+  }
+  
+  nav {
+    transition: right .3s ease-in-out;
+    display: flex;
+    align-items: center;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+  }
+  
+  nav li {
+    position: relative;
+  }
+  
+  nav li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  nav li a:hover {
+    color: #00bcd4;
+  }
+  
+  nav li.active a {
+    color: #00bcd4;
+    font-weight: bold;
+    border-bottom: 2px solid #00bcd4;
+  }
+  #icons{
+    display: none;
+  }
+  @media (max-width: 768px) {
+    #menuicon {
+      display: block; 
+    }
+  
+    nav {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 1000;
+      display: none; 
+      position: absolute;
+      top: 70px;
+      width:100%;
+      text-align: center;
+      right: 0px;
+      background: #ffffff;
+      padding: 10px;
+    }
+  
+    nav.show-menu {
+      display: flex;
+    }
+  
+    nav ul {
+        margin: 0;
+        flex-direction: column;
+
+      gap: 10px;
+      text-align: center;
+    }
+  
+    nav li a {
+      font-size: 18px;
+      color: #000000;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #icons{
+        width: max-content;
+        display: block;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-self: center;
+    }
+    #icons ol 
+    {
+        display: flex;
+        flex-direction: row;
+        list-style-type: none;
+    }
+    #icons ol li{
+        margin: .5em;
+        font-size: 1em;
+    }
+    #home-cont {
+      padding: 10px;
+    }
+  
+    nav li a {
+      font-size: 16px;
+    }
+    #myname h1{
+      font-size: .71rem !important;
+    }
+  }
+  

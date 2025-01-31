@@ -1,0 +1,180 @@
+/* General Styling */
+#project-view-section {
+    
+    margin: auto;
+    padding: 20px;
+    color: #000;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  /* Title */
+  #project-view-section h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+    position: relative;
+  }
+  
+  #project-view-section  h1::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 4px;
+    background: #000;
+    margin: 10px auto 0;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  #project-view-section  h1:hover::after {
+    width: 100px;
+  }
+  #pr-images-cont {
+    display: flex;
+    flex-wrap: nowrap;  /* Ensures images stay in one row */
+    justify-content: flex-start; 
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;  /* Enables horizontal scrolling */
+    white-space: nowrap; /* Prevents wrapping */
+    padding: 10px;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: grey #f8f8f8;
+}
+
+  #pr-images-cont::-webkit-scrollbar {
+    height: 8px;
+    border-radius: 50%;
+  }
+  
+  #pr-images-cont::-webkit-scrollbar-track {
+    background:green;
+    border-radius: 50%;
+    border-radius: 10px;
+  }
+  
+  #pr-images-cont::-webkit-scrollbar-thumb {
+    background:green;
+    border-radius: 50%;
+    border-radius: 10px;
+  }
+
+  #pr-images-cont img {
+    width: 400px; /* Set fixed width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevents images from shrinking */
+    z-index: 1000;
+}
+
+  #pr-images-cont img:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Description */
+  #pr-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: justify;
+    background: #f8f8f8;
+    padding: 15px;
+    border-left: 5px solid #000;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  #pr-desc:hover {
+    background: #e8e8e8;
+  }
+  
+  /* Technologies List */
+  #project-technologies {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  #project-technologies strong{
+    color: #000000d5;
+  }
+  #project-technologies li {
+    font-size: 1rem;
+    padding: 10px;
+    color: #464646;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+  }
+  #project-technologies li:hover  strong{
+    color: white;
+  }  
+  #project-technologies li:hover {
+    color: #e8e8e8;
+    background: #333;
+    transform: translateX(10px);
+  }
+  
+  /* View Project Button */
+  #project-view-section a {
+    display: inline-block;
+    width: 100%;
+    background: rgb(73, 73, 73);
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  #project-view-section a:hover {
+    background: #333;
+    
+  }
+  @media only screen and (max-width:480px){
+    
+  #project-view-section a {
+    font-size: .61rem;
+    padding: .4rem;
+    margin: 0px;
+  }
+  
+  #pr-images-cont img {
+    width: 200px;
+  }
+  #project-view-section h1{
+    font-size: 1rem;
+  }
+  #pr-desc{
+    margin-top: 1em;
+    font-size: .55rem;
+    border-left-width:3px ;
+  }
+
+  #project-view-section  h1::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: #000;
+    margin: 1px auto 0;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  #project-view-section  h1:hover::after {
+    width: 100px;
+  }
+  /* General Styling */
+#project-view-section {
+    margin: auto;
+    padding: 5px;
+}
+  }

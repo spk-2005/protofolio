@@ -1,0 +1,45 @@
+
+#avhivement-section {
+    text-align: center;
+    color: #333;
+}
+
+#avhivement-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: 100;
+    color: #555;
+    text-transform: uppercase;
+}
+
+#avhivement-section img {
+    width: 90%;
+    height:400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    #avhivement-section {
+        padding: 15px;
+    }
+
+    #avhivement-section h1 {
+        font-size: 2rem;
+    }
+
+    #avhivement-section img {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    #avhivement-section h1 {
+        font-size: 1rem;
+    }
+
+    #avhivement-section img {
+        width: 100%;
+        height: 180px;
+    }
+}
