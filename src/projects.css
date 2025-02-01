@@ -11,6 +11,13 @@
 #project{
     margin-top: 1em;
 }
+#loading-image{
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
 #project-section ol {
     list-style: none;
     counter-reset: project-counter;
@@ -147,6 +154,10 @@
         padding: 0.5rem;
     }
 
+    #loading-image{
+        width: 20px;
+        height: 20px;
+    }
     #project-section li {
         padding: 0.75rem;
         margin-top: 3em;

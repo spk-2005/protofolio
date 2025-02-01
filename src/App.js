@@ -8,6 +8,8 @@ import Projects from './projects';
 import Projectsview from './projectsview';
 import Internships from './internships';
 import Contact from './contact';
+import Skills from './skills';
+import Experience from './experience';
 
 function App() {
   return (
@@ -23,7 +25,8 @@ function App() {
         <Route path='/projectsview/:id' element={<Projectsview/>}/>  
         <Route path='/internships' element={<Internships/>}/>  
         <Route path='/contact' element={<Contact/>}/>
-      
+        <Route path='/skills' element={<Skills/>}/>
+        <Route path='/experience' element={<Experience/>}/>
       </Routes>
       </BrowserRouter>
    </div>

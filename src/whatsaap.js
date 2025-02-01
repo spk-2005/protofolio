@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaEnvelope, FaPhone } from "react-icons/fa";
 import './whatsapp.css';
-
+import chat from './chat.png';
 const WhatsAppChat = () => {
   const [showIcons, setShowIcons] = useState(false);
 
@@ -13,8 +13,8 @@ const WhatsAppChat = () => {
     <div id="chaticon">
       {/* Main chat button with custom image */}
       {!showIcons && (
-        <button className="chat-button" id="chat-icon" onClick={handleClick} title="Chat With Me">
-         <ion-icon name="chatbubble-outline"></ion-icon>
+        <button className="chat-button"  onClick={handleClick} title="Chat With Me">
+         <img src={chat} alt=""id="chat-icon"/>
         </button>
       )}
 
