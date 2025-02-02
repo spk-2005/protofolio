@@ -55,7 +55,7 @@ export default function Viewresume() {
               <iframe
                 src="https://drive.google.com/file/d/1uv7hAkJmnzL4FBkqZm13f8b88T7G6Yed/preview"
                 className="resume-pdf"
-                allow="autoplay"
+                allow="autoplay"  title="Resume PDF Preview"
               ></iframe>
               <div className="resume-buttons">
                 <button className="close-btn" onClick={handleCloseResume}>

@@ -4,7 +4,6 @@ import Achievements from './achivements';
 import Projects from './projects';
 import Internships from './internships';
 import './home.css';
-import Viewresume from './viewresume';
 import Skills from './skills';
 import Experience from './experience';
 import Contact from './contact';
