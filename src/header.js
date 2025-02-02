@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./header.css";
-import { FaEnvelope, FaFacebook, FaInstagram, FaLinkedin, FaPhone, FaWhatsapp } from "react-icons/fa";
-
 export default function Header() {
   const [showmenu, setshowmenu] = useState(false);
 
