@@ -13,24 +13,19 @@
     right: 20px;
     z-index: 1000;
   }
-  
-  /* Main chat button with custom image */
   .chat-button {
     background-color: transparent;
     border: none;
     padding: 10px;
     cursor: pointer;
-    border-radius: 50%;
-    animation: pulse 1.5s infinite; /* Animation for the chat icon */
+  border-radius: 50%;
+    animation: pulse 1.5s infinite; 
   }
   
-  /* Chat button (close icon) */
   .close-button ion-icon {
     font-size: 30px;
     color: #128c7e;
   }
-  
-  /* Chat icon list */
   .chat-icons {
     list-style: none;
     padding: 0;
@@ -39,23 +34,20 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
-    animation: fadeIn 0.5s ease-in; /* Animation for showing icons */
+    animation: fadeIn 0.5s ease-in; 
   }
   
-  /* Styling for each icon */
   .chat-icons li {
     padding: 5px;
-    border-radius: 50%; /* Circular */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation for hover effect */
+    border-radius: 50%; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  /* Hover effect for icons */
   .chat-icons li:hover {
-    transform: scale(1.1); /* Slightly enlarge the icon */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+    transform: scale(1.1); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
   
-  /* Ensuring icons fill the li elements */
   .chat-icons li a {
     display: block;
     width: 100%;
@@ -66,7 +58,7 @@
   }
   
   #chat-icon {
-    width: 50px; /* Adjust size as needed */
+    width: 50px; 
     height: 50px;
     border-radius: 50%;
   }
@@ -83,7 +75,6 @@
     }
   }
   
-  /* Fade-in animation for icons */
   @keyframes fadeIn {
     0% {
       opacity: 0;

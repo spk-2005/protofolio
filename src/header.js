@@ -10,7 +10,7 @@ export default function Header() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/aboutme", label: "About" },
+    { href: "/about", label: "About" },
     { href: "/projects", label: "Projects" },
     { href: "/internships", label: "Internships & Certifications" },
     { href: "/skills", label: "Skills & Technologies" },
@@ -36,9 +36,9 @@ export default function Header() {
           </div>
           <div id="menuicon" onClick={toggleMenu}>
             {showmenu ? (
-              <span>&#x2716; {/* Close icon */}</span>
+              <span>&#x2716; </span>
             ) : (
-              <span>&#9776; {/* Hamburger icon */}</span>
+              <span>&#9776; </span>
             )}
           </div>
           <nav className={showmenu ? "show-menu" : ""}>

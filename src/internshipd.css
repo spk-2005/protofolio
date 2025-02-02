@@ -1,4 +1,4 @@
-/* General Styling */
+
 #internships-section {
     text-align: center;
     padding: 50px 20px;
@@ -29,7 +29,6 @@
     width: 100px;
 }
 
-/* Internship Cards */
 .internship-container {
     display: flex;
     flex-wrap: wrap;
@@ -71,7 +70,6 @@
     margin-top: 10px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     
 #internships-section {
@@ -112,7 +110,6 @@
     }
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;

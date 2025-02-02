@@ -1,74 +1,46 @@
-/* Home Section Styling */
-#home-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f5f5f5; /* Light gray background */
-    font-family: 'Arial', sans-serif;
-  }
+
   
-  /* Styling for h1 */
-  #myname {
-    font-size: 2.5rem;
+  
+  #my-name {
+    background-color: #dadde7;
+    font-size: 2rem;
     font-weight: bold;
-    color: #2d3748; /* Dark text color for good contrast */
+    color: #2d3748; 
     text-align: center;
+    padding:.1em;
     margin-bottom: 20px;
     transition: transform 0.3s ease-in-out;
   }
   
-  /* Hover effect for h1 */
-  #myname:hover {
-    color: #4e73df; /* Slightly bluish color for hover effect */
-    transform: scale(1.05);
-  }
   
-  /* WhatsApp Section Styling */
   #home-section .motion-div:nth-child(2) {
     margin-top: 20px;
   }
   
-  /* Achievements, Projects, and Internships Sections */
   #home-section .motion-div {
     margin-top: 20px;
     text-align: center;
     padding: 10px;
-    background-color: #ffffff; /* White background for each section */
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Adjust colors for individual sections */
-  #home-section .motion-div:nth-child(3) {
-    border-left: 5px solid #4e73df; /* Blue left border for Achievements */
+  #namdet{
+    font-size: .4em;
   }
-  
-  #home-section .motion-div:nth-child(4) {
-    border-left: 5px solid #1cc88a; /* Green left border for Projects */
+ 
+  #resume{
+    position: absolute;
+    top: 10em;
   }
-  
-  #home-section .motion-div:nth-child(5) {
-    border-left: 5px solid #36b9cc; /* Teal left border for Internships */
-  }
-  
-  /* Styling for motion elements */
-
-  #home-section   motion.div {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease-out, transform 1s ease-out;
-  }
-  
-  #home-section  motion.div.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-
   @media only screen and (max-width:480px){
-    #myname {
-        font-size: .71rem;
+    #my-name {
+        font-size: .5671rem;
     } 
+    #resume{
+      top: 3.5em;
+      left: -1.5em;
+    }
+    #my-name span{
+      font-size: .6em;
+    }
   }

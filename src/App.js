@@ -2,8 +2,6 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import './App.css';
 import Home from './home';
 import Header from './header';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Aboutme from './aboutme';
 import Projects from './projects';
 import Projectsview from './projectsview';
 import Internships from './internships';
@@ -11,6 +9,10 @@ import Contact from './contact';
 import Skills from './skills';
 import Experience from './experience';
 
+import { motion } from 'framer-motion';
+import WhatsAppChat from './whatsaap';
+import Viewresume from './viewresume';
+import About from './about';
 function App() {
   return (
   <>
@@ -20,7 +22,7 @@ function App() {
       <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home/>}/>
-        <Route path='/aboutme' element={<Aboutme/>}/>
+        <Route path='/about' element={<About/>}/>
         <Route path='/projects' element={<Projects/>}/>
         <Route path='/projectsview/:id' element={<Projectsview/>}/>  
         <Route path='/internships' element={<Internships/>}/>  
@@ -30,7 +32,18 @@ function App() {
       </Routes>
       </BrowserRouter>
    </div>
+   <motion.div 
+        initial={{ opacity: 0, x:0,y:0 }}
+        animate={{ opacity: 1, x:0,y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+
+      >
+        <WhatsAppChat />
+      </motion.div>
   </section>
+  <div id='resume'>
+      <Viewresume/></div>
+    
   </>
   );
 }

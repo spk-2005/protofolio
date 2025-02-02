@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaWhatsapp, FaFacebook, FaInstagram, FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaInstagram, FaEnvelope, FaPhone, FaLinkedin } from "react-icons/fa";
 import './whatsapp.css';
 import chat from './chat.png';
 const WhatsAppChat = () => {
@@ -11,21 +11,18 @@ const WhatsAppChat = () => {
 
   return (
     <div id="chaticon">
-      {/* Main chat button with custom image */}
       {!showIcons && (
         <button className="chat-button"  onClick={handleClick} title="Chat With Me">
          <img src={chat} alt=""id="chat-icon"/>
         </button>
       )}
 
-      {/* Close button */}
       {showIcons && (
         <button className="chat-button close-button" onClick={handleClick}>
           <ion-icon name="close-outline"></ion-icon>
         </button>
       )}
 
-      {/* Other icons shown on click */}
       {showIcons && (
         <ol className="chat-icons">
           <li>
@@ -34,12 +31,12 @@ const WhatsAppChat = () => {
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/your-page" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.facebook.com/profile.php?id=100083873681403" target="_blank" rel="noopener noreferrer">
               <FaFacebook size={30} color="blue" />
             </a>
           </li>
           <li>
-            <a href="https://www.instagram.com/your-profile" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/prasanna_kumar_simmhadri_2005/?hl=en" target="_blank" rel="noopener noreferrer">
               <FaInstagram size={30} color="#E4405F" />
             </a>
           </li>
@@ -51,6 +48,11 @@ const WhatsAppChat = () => {
           <li>
             <a href="tel:8309179509">
               <FaPhone size={30} color="black" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/?trk=opento_sprofile_details">
+              <FaLinkedin size={30} color="rgb(0, 128, 255)" />
             </a>
           </li>
         </ol>

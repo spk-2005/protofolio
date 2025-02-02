@@ -1,6 +1,6 @@
 import React from 'react';
-import { FaWhatsapp, FaFacebook, FaInstagram, FaEnvelope, FaPhone } from "react-icons/fa";
-import './contact.css';  // Assuming you want to add styles
+import { FaWhatsapp, FaFacebook, FaInstagram, FaEnvelope, FaPhone,FaLinkedin } from "react-icons/fa";
+import './contact.css';
 
 export default function Contact() {
   return (
@@ -33,6 +33,11 @@ export default function Contact() {
           <li>
             <a href="tel:8309179509" aria-label="Phone">
               <FaPhone size={30} color="black" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/?trk=opento_sprofile_details" aria-label="Phone">
+              <FaLinkedin size={30} color="rgb(0, 128, 255)" />
             </a>
           </li>
         </ol>

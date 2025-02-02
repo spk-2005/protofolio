@@ -1,4 +1,4 @@
-/* General Styling */
+
 #project-view-section {
     
     margin: auto;
@@ -9,7 +9,6 @@
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   }
   
-  /* Title */
   #project-view-section h1 {
     text-align: center;
     font-size: 2rem;
@@ -34,12 +33,12 @@
   }
   #pr-images-cont {
     display: flex;
-    flex-wrap: nowrap;  /* Ensures images stay in one row */
+    flex-wrap: nowrap;  
     justify-content: flex-start; 
     align-items: center;
     gap: 10px;
-    overflow-x: auto;  /* Enables horizontal scrolling */
-    white-space: nowrap; /* Prevents wrapping */
+    overflow-x: auto;  
+    white-space: nowrap;
     padding: 10px;
     max-width: 100%;
     scrollbar-width: thin;
@@ -64,12 +63,12 @@
   }
 
   #pr-images-cont img {
-    width: 400px; /* Set fixed width */
-    height: auto; /* Maintain aspect ratio */
+    width: 400px;
+    height: auto; 
     border-radius: 10px;
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
     cursor: pointer;
-    flex-shrink: 0; /* Prevents images from shrinking */
+    flex-shrink: 0;
     z-index: 1000;
 }
 
@@ -77,7 +76,7 @@
     transform: scale(1.1);
   }
   
-  /* Description */
+  
   #pr-desc {
     font-size: 1rem;
     line-height: 1.6;
@@ -92,7 +91,6 @@
     background: #e8e8e8;
   }
   
-  /* Technologies List */
   #project-technologies {
     list-style: none;
     padding: 0;
@@ -119,7 +117,6 @@
     transform: translateX(10px);
   }
   
-  /* View Project Button */
   #project-view-section a {
     display: inline-block;
     width: 100%;
@@ -172,7 +169,7 @@
   #project-view-section  h1:hover::after {
     width: 100px;
   }
-  /* General Styling */
+  
 #project-view-section {
     margin: auto;
     padding: 5px;

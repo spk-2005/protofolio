@@ -1,0 +1,11 @@
+
+#resume{
+    position: absolute;
+    top: 10em;
+  }
+  @media only screen and (max-width:480px){
+    #resume{
+      top: 2em !important;
+      left: -1.5em;
+    }
+  }
