@@ -2,7 +2,7 @@ import React from 'react';
 import i1 from './swas.jpg'; 
 import './experience.css';
 import i2 from './hack.jpg';
-
+import i3 from './vvit.jpg';
 export default function Experience() {
   return (
     <>
@@ -24,21 +24,9 @@ export default function Experience() {
         </p>
       </div>
       <div className="experience-card">
-        <img src={i1} alt="Hackathon Event" />
+        <img src={i3} alt="Hackathon Event" />
         <p>
           I had participated in Escape Saga Contest which is based on coding regarding python,c languages which was conducted by VVIT.
-        </p>
-      </div>
-      <div className="experience-card">
-        <img src={i1} alt="Hackathon Event" />
-        <p>
-        I had participated in Spidy Contest which is based on coding regarding Web Development which was conducted by RVRJCCE.
-        </p>
-      </div>
-      <div className="experience-card">
-        <img src={i1} alt="Hackathon Event" />
-        <p>
-          I attended a 24-hour Hackathon focused on web development.
         </p>
       </div>
       

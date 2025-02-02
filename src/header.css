@@ -129,4 +129,8 @@
       font-size: .71rem !important;
     }
   }
-  
+  #atrate{
+    color: grey;
+    margin-top: 10em;
+    font-size: .6rem;
+  }

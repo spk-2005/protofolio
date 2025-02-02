@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./header.css";
+import { FaEnvelope, FaFacebook, FaInstagram, FaLinkedin, FaPhone, FaWhatsapp } from "react-icons/fa";
 
 export default function Header() {
   const [showmenu, setshowmenu] = useState(false);
@@ -50,12 +51,7 @@ export default function Header() {
               ))}
             </ul>
             {showmenu ? (<><div id="icons">
-                
-                <ol>
-                    <li title="Whatsaap"><ion-icon name="logo-whatsapp"></ion-icon></li>
-                    <li title="Linkdein"><ion-icon name="logo-linkedin"></ion-icon></li>
-                    <li title="Mobile"><ion-icon name="call-outline"></ion-icon></li>
-                </ol>
+                <span id="atrate">@prasannakumar</span>
                 </div></>):(<></>)}
           </nav>
         </div>

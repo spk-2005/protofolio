@@ -25,9 +25,12 @@
     .contact-content h1{
         font-size: 1rem;
     }
-    
+    #icon{
+      width: 20px;
+    }
   .contact-list{
-    display: grid; 
+    display: flex;
+    flex-wrap: wrap; 
     font-size: .1rem !important;
   }
   }
