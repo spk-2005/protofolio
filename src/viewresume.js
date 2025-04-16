@@ -32,7 +32,7 @@ export default function Viewresume() {
   return (
     <>
       <section className={showres ? "blurred" : ""}>
-        <div className="content">
+        <section className="content">
           {!showres ? (
             <div className="resume-preview">
               <button className="open-btn" onClick={handleShowResume}>
@@ -67,7 +67,7 @@ export default function Viewresume() {
               </div>
             </div>
           )}
-        </div>
+        </section>
       </section>
     </>
   );

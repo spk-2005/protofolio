@@ -2,6 +2,7 @@
 #resume{
     position: absolute;
     top: 10em;
+    background-color: transparent !important;
   }
   @media only screen and (max-width:480px){
     #resume{
