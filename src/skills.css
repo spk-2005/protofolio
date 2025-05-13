@@ -1,153 +1,183 @@
-/* Skills CSS */
-:root {
-    --primary-dark: #121212;
-    --secondary-dark: #1e1e1e;
-    --accent-dark: #2d2d2d;
-    --light-gray: #e0e0e0;
-    --mid-gray: #a0a0a0;
-    --accent-color: #4d4d4d;
-    --highlight: #3a3a3a;
-    --text-primary: #f5f5f5;
-    --text-secondary: #c8c8c8;
-    --subtle-accent: #303030;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-  }
-  
-  #skills-section {
-    padding: 2rem 0;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  #skillhead {
-    font-size: 2rem;
-    color: var(--text-primary);
-    margin-bottom: 2rem;
-    text-align: center;
-    position: relative;
-    padding-bottom: 0.8rem;
-  }
-  
-  #skillhead::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background-color: var(--accent-color);
-  }
-  
-  .skill-category {
-    margin-bottom: 2.5rem;
-  }
-  
-  .skill-category h1 {
-    font-size: 1.8rem;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    position: relative;
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-  
-  .skill-category h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background-color: var(--accent-color);
-  }
-  
+/* Skills Component Styling */
+#skills-section {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+#skillhead {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--text-primary);
+  position: relative;
+}
+
+#skillhead::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent-color));
+  border-radius: 2px;
+}
+
+.skill-category {
+  margin: 2.5rem 0;
+}
+
+.skill-category h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  text-align: left;
+  padding-left: 1rem;
+  border-left: 4px solid var(--accent-color);
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.skill-card {
+  background-color: var(--secondary-dark);
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  text-align: center;
+  height: 140px;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  background-color: var(--accent-dark);
+}
+
+.skill-card svg {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.skill-card:hover svg {
+  transform: scale(1.1);
+  color: var(--light-gray);
+}
+
+.skill-card span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.skill-card:hover span {
+  color: var(--text-primary);
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--accent-dark), 
+    var(--accent-color), 
+    var(--accent-dark), 
+    transparent
+  );
+  margin: 3rem 0;
+  opacity: 0.5;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
   .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: flex-start;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.2rem;
   }
   
   .skill-card {
-    background-color: var(--accent-dark);
-    border-radius: 8px;
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: calc(16.66% - 1.5rem);
-    min-width: 120px;
-    box-shadow: 0 4px 8px var(--shadow-color);
-    transition: all 0.3s ease;
-  }
-  
-  .skill-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 16px var(--shadow-color);
-    background-color: var(--highlight);
+    padding: 1.2rem 0.8rem;
+    height: 130px;
   }
   
   .skill-card svg {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: var(--light-gray);
-    transition: transform 0.3s ease, color 0.3s ease;
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #skillhead {
+    font-size: 2rem;
+    margin-bottom: 2rem;
   }
   
-  .skill-card:hover svg {
-    transform: scale(1.15);
-    color: white;
+  .skill-category h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+  
+  .skill-card {
+    padding: 1rem 0.6rem;
+    height: 120px;
+  }
+  
+  .skill-card svg {
+    font-size: 2rem;
   }
   
   .skill-card span {
-    color: var(--text-secondary);
     font-size: 0.9rem;
-    font-weight: 500;
-    text-align: center;
-    transition: color 0.3s ease;
+  }
+}
+
+@media (max-width: 480px) {
+  #skills-section {
+    padding: 0 1rem;
   }
   
-  .skill-card:hover span {
-    color: var(--text-primary);
+  #skillhead {
+    font-size: 1.8rem;
   }
   
-  hr {
-    border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-    margin: 2.5rem 0;
+  .skill-category h2 {
+    font-size: 1.3rem;
   }
   
-  /* Media Queries */
-  @media (max-width: 992px) {
-    .skill-card {
-      width: calc(25% - 1.5rem);
-    }
+  .card-container {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.8rem;
   }
   
-  @media (max-width: 768px) {
-    .skill-card {
-      width: calc(33.33% - 1.5rem);
-    }
-    
-    #skills-section {
-      padding: 1.5rem;
-    }
+  .skill-card {
+    padding: 0.8rem 0.5rem;
+    height: 110px;
   }
   
-  @media (max-width: 576px) {
-    .skill-card {
-      width: calc(50% - 1rem);
-      min-width: 100px;
-    }
-    
-    .card-container {
-      gap: 1rem;
-    }
-    
-    .skill-card svg {
-      font-size: 2rem;
-    }
+  .skill-card svg {
+    font-size: 1.8rem;
   }
+  
+  .skill-card span {
+    font-size: 0.8rem;
+  }
+}
