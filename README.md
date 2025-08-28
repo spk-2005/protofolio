@@ -70,10 +70,6 @@ protofolio/
 ├── src/
 │   ├── Portfolio3D.js
 │   ├── assets/
-│   │   ├── images/
-│   │   └── icons/
-│   ├── styles/
-│   │   └── global.css
 │   ├── App.js
 │   ├── App.css
 │   └── index.js
