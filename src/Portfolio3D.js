@@ -1,497 +1,656 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, X, Github, Linkedin, Mail, ExternalLink, ChevronDown, ArrowRight, MapPin, Calendar, Code2, User, Phone, Heart, Camera, Music, Zap, Database, Globe, Smartphone, Settings, Terminal, FileCode, Layers, Cloud, Monitor, Wrench, Cpu, Server, Palette, Layout } from 'lucide-react';
-
+import { Menu, X, Github, Linkedin, Mail, ExternalLink, ChevronDown, ArrowRight, MapPin, Code2, User, Phone, Heart, Camera, Music, Zap, Database, Globe, Smartphone, Settings, Terminal, FileCode, Layers, Cloud, Monitor, Wrench, Cpu, Server, Palette, Layout, Download, Star, Award, Trophy, Shield } from 'lucide-react';
 
 import chatbot from './project_assets/chatbot.png';
 import online from './project_assets/Admin Panel - Google Chrome 15-07-2025 07_13_26.png';
 import spkhub from './project_assets/spkhub.png';
-import swasthik from './project_assets/React App - Google Chrome 27-01-2025 19_02_07.png'
+import swasthik from './project_assets/React App - Google Chrome 27-01-2025 19_02_07.png';
 
 const Portfolio3D = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isLoading, setIsLoading] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [stars, setStars] = useState([]);
+  const [loadingPhase, setLoadingPhase] = useState(0); // 0=black, 1=text-reveal, 2=glitch, 3=done
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [hoveredProject, setHoveredProject] = useState(null);
+  const [typedText, setTypedText] = useState('');
+
+  // ── Cursor: zero state, pure DOM refs ──
+  const cursorDotRef = useRef(null);
+  const cursorRingRef = useRef(null);
+  const cursorGlowRef = useRef(null);
+  const mouseX = useRef(0);
+  const mouseY = useRef(0);
+  const ringX = useRef(0);
+  const ringY = useRef(0);
+  const rafRef = useRef(null);
 
   const sectionsRef = useRef({});
+  const canvasRef = useRef(null);
 
-  // Generate random stars
+  const titles = ['Full Stack Developer', 'SaaS Builder', 'Backend Engineer', 'Problem Solver'];
+  const titleIndex = useRef(0);
+  const charIndex = useRef(0);
+  const isDeleting = useRef(false);
+
+  // ── SMOOTH CURSOR (RAF + lerp, no React state) ──
   useEffect(() => {
-    const generateStars = () => {
-      const newStars = [];
-      for (let i = 0; i < 200; i++) {
-        newStars.push({
-          id: i,
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          size: Math.random() * 3 + 1,
-          speed: Math.random() * 0.5 + 0.1,
-          opacity: Math.random() * 0.8 + 0.2,
-          twinkleSpeed: Math.random() * 0.02 + 0.01
-        });
+    const onMouseMove = (e) => {
+      mouseX.current = e.clientX;
+      mouseY.current = e.clientY;
+    };
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+    const loop = () => {
+      if (cursorDotRef.current) {
+        cursorDotRef.current.style.transform = `translate(${mouseX.current - 5}px, ${mouseY.current - 5}px)`;
       }
-      setStars(newStars);
+      ringX.current += (mouseX.current - ringX.current) * 0.13;
+      ringY.current += (mouseY.current - ringY.current) * 0.13;
+      if (cursorRingRef.current) {
+        cursorRingRef.current.style.transform = `translate(${ringX.current - 18}px, ${ringY.current - 18}px)`;
+      }
+      if (cursorGlowRef.current) {
+        cursorGlowRef.current.style.transform = `translate(${ringX.current - 30}px, ${ringY.current - 30}px)`;
+      }
+      rafRef.current = requestAnimationFrame(loop);
     };
+    rafRef.current = requestAnimationFrame(loop);
 
-    generateStars();
-    window.addEventListener('resize', generateStars);
-    return () => window.removeEventListener('resize', generateStars);
-  }, []);
-
-  // Animate stars
-  useEffect(() => {
-    const animateStars = () => {
-      setStars(prevStars => 
-        prevStars.map(star => ({
-          ...star,
-          x: (star.x - star.speed + window.innerWidth) % window.innerWidth,
-          opacity: star.opacity + Math.sin(Date.now() * star.twinkleSpeed) * 0.3
-        }))
-      );
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      cancelAnimationFrame(rafRef.current);
     };
-
-    const interval = setInterval(animateStars, 50);
-    return () => clearInterval(interval);
   }, []);
 
-  // Handle mouse movement for cursor effect and galaxy interaction
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      // Create ripple effect on galaxy background
-      const ripple = document.createElement('div');
-      ripple.className = 'galaxy-ripple';
-      ripple.style.left = `${e.clientX}px`;
-      ripple.style.top = `${e.clientY}px`;
-      document.body.appendChild(ripple);
-      
-      setTimeout(() => {
-        if (document.body.contains(ripple)) {
-          document.body.removeChild(ripple);
-        }
-      }, 1000);
+    if (isLoading) return;
+    const grow = () => { if (cursorRingRef.current) { cursorRingRef.current.style.width = '52px'; cursorRingRef.current.style.height = '52px'; cursorRingRef.current.style.marginLeft = '-26px'; cursorRingRef.current.style.marginTop = '-26px'; cursorRingRef.current.style.opacity = '0.6'; } };
+    const shrink = () => { if (cursorRingRef.current) { cursorRingRef.current.style.width = '36px'; cursorRingRef.current.style.height = '36px'; cursorRingRef.current.style.marginLeft = '0'; cursorRingRef.current.style.marginTop = '0'; cursorRingRef.current.style.opacity = '1'; } };
+    document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', grow); el.addEventListener('mouseleave', shrink); });
+    return () => document.querySelectorAll('a, button').forEach(el => { el.removeEventListener('mouseenter', grow); el.removeEventListener('mouseleave', shrink); });
+  }, [isLoading]);
+
+  // ── CANVAS STARFIELD ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = Array.from({ length: 280 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 1.6 + 0.2,
+      speed: Math.random() * 0.35 + 0.04,
+      color: ['#ffffff', '#a8d8ff', '#ffd6ff', '#d6fffa'][Math.floor(Math.random() * 4)],
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 0.025 + 0.008
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        s.x -= s.speed;
+        if (s.x < 0) { s.x = canvas.width; s.y = Math.random() * canvas.height; }
+        s.twinkle += s.twinkleSpeed;
+        const alpha = 0.25 + Math.abs(Math.sin(s.twinkle)) * 0.75;
+        const sz = s.size * (0.7 + Math.abs(Math.sin(s.twinkle * 0.5)) * 0.5);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.shadowBlur = sz * 8;
+        ctx.shadowColor = s.color;
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, sz, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      [{ x: 0.18, y: 0.22, r: 320, c: 'rgba(0,245,255,0.022)' }, { x: 0.82, y: 0.72, r: 380, c: 'rgba(179,71,255,0.022)' }, { x: 0.5, y: 0.5, r: 440, c: 'rgba(244,114,182,0.012)' }].forEach(n => {
+        const grd = ctx.createRadialGradient(n.x * canvas.width, n.y * canvas.height, 0, n.x * canvas.width, n.y * canvas.height, n.r);
+        grd.addColorStop(0, n.c); grd.addColorStop(1, 'transparent');
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      });
+      animId = requestAnimationFrame(draw);
     };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    draw();
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
   }, []);
 
-  // Loading animation
+  // Typewriter
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    let t;
+    const type = () => {
+      const cur = titles[titleIndex.current];
+      if (!isDeleting.current) {
+        setTypedText(cur.substring(0, charIndex.current + 1));
+        charIndex.current++;
+        if (charIndex.current === cur.length) { isDeleting.current = true; t = setTimeout(type, 1800); return; }
+      } else {
+        setTypedText(cur.substring(0, charIndex.current - 1));
+        charIndex.current--;
+        if (charIndex.current === 0) { isDeleting.current = false; titleIndex.current = (titleIndex.current + 1) % titles.length; }
+      }
+      t = setTimeout(type, isDeleting.current ? 52 : 92);
+    };
+    t = setTimeout(type, 1300);
+    return () => clearTimeout(t);
   }, []);
 
-  const scrollToSection = (sectionId) => {
-    const element = sectionsRef.current[sectionId];
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
+  // ── CINEMATIC LOADING SEQUENCE ──
+  useEffect(() => {
+    // Phase 0 → 1: brief darkness then reveal
+    const t0 = setTimeout(() => setLoadingPhase(1), 400);
+    // Progress bar runs
+    const iv = setInterval(() => setLoadingProgress(p => {
+      if (p >= 100) { clearInterval(iv); return 100; }
+      return Math.min(p + Math.random() * 12, 100);
+    }), 110);
+    // Phase 2: glitch/flash
+    const t2 = setTimeout(() => setLoadingPhase(2), 2800);
+    // Phase 3: white flash then dismiss
+    const t3 = setTimeout(() => setLoadingPhase(3), 3400);
+    const t4 = setTimeout(() => setIsLoading(false), 3800);
+    return () => { clearTimeout(t0); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearInterval(iv); };
+  }, []);
+
+  // Section observer
+  useEffect(() => {
+    if (isLoading) return;
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }), { threshold: 0.3 });
+    Object.values(sectionsRef.current).forEach(el => el && obs.observe(el));
+    return () => obs.disconnect();
+  }, [isLoading]);
+
+  const scrollToSection = id => { sectionsRef.current[id]?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); };
+
+  const handleResumeDownload = () => {
+    const a = document.createElement('a');
+    a.href = '/resume/PrasannaKumarSimhadri.pdf';
+    a.download = 'PrasannaKumarSimhadri.pdf';
+    a.target = '_blank';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   };
 
   const projects = [
-    {
-      id: 1,
-      title: "ChatBot for College",
-      description: `Developed and deployed a custom NLP-based Chatbot. The chatbot is fully responsive across mobile and desktop devices, ensuring a smooth user experience everywhere. Handled conditional rendering, responsive layouts, and PDF export features.`,
-      tech: ["React", "Node.js", "NLP"],
-      image: chatbot,
-      github1: "https://github.com/spk-2005/rvrbot",
-      github2: "https://github.com/spk-2005/rvrjcbot-backend",
-      live: "https://rvrbot.netlify.app/",
-      featured: true,
-      category: "AI/ML"
-    },
-    {
-      id: 2,
-      title: "ONLINE EXAMINATION SYSTEM",
-      description: `Developed and deployed an Online mock test web app with secure login and quiz functionality. Integrated MongoDB for dynamic data storage, including tests, users, and responses. Handled conditional rendering, responsive layouts, and PDF export features.`,
-      tech: ["Next.js", "MongoDB"],
-      image:online,
-      github1: "https://github.com/spk-2005/online-exam-departmental-test",
-      github2: "#",
-      live: "https://departmental-tests.netlify.app/",
-      featured: true,
-      category: "Web App"
-    },
-    {
-      id: 3,
-      title: "SPK-HUB",
-      description: `Developed and deployed a platform for real-time updates on current events, history, mysteries, and lifestyle topics. The site is fully responsive across mobile and desktop devices with Image to PDF and Text to PDF Converters and SEO Optimization.`,
-      tech: ["React", "Express", "MongoDB"],
-      image: spkhub,
-      github1: "https://github.com/spk-2005/SPKHUB-FRONTEND",
-      github2: "https://github.com/spk-2005/SPKHUB-backend",
-      live: "https://spkhub.netlify.app/",
-      featured: false,
-      category: "Content Platform"
-    },
-    {
-      id: 4,
-      title: "SSEM School Website",
-      description: `A custom prototype website for a school, designed to offer a clean, engaging, and informative experience for students, parents, and staff. Features modern design patterns and responsive layouts.`,
-      tech: ["React", "Express", "MongoDB"],
-      image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=500&h=300&fit=crop",
-      github1: "https://github.com/spk-2005/ssem",
-      github2: "#",
-      live: "https://ssem2007.netlify.app/",
-      featured: false,
-      category: "Educational"
-    },
-    {
-      id: 5,
-      title: "KRUSHI KALPA",
-      description: `KRUSHI KALPA – Bridging Farmers & Consumers. A web application designed to empower farmers and connect them directly with consumers! Part of RUPAJNA 2025 – Intra-College Prototype Competition, revolutionizing agriculture through technology.`,
-      tech: ["React", "Express", "MongoDB"],
-      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500&h=300&fit=crop",
-      github1: "https://github.com/spk-2005/krushikalpa",
-      github2: "#",
-      live: "",
-      featured: false,
-      category: "Agriculture Tech"
-    },
-    {
-      id: 6,
-      title: "SWASTIK",
-      description: `SWASTIK: A Visionary Prototype for Social Impact. Our prototype web application designed to tackle pressing social issues through collective action and innovation. Engages communities across four impactful categories.`,
-      tech: ["React", "Express", "MongoDB"],
-      image:swasthik,     
-      github1: "#",
-      github2: "#",
-      live: "",
-      featured: false,
-      category: "Social Impact"
-    }
-  ];
-
-  const experience = [
-    {
-      role: "SDE Intern",
-      company: "Bluestock™🔺",
-      period: "Apr 2025 - Jun 2025 · 3 mos",
-      location: "Remote",
-      description: "📌 Not only did I gain hands-on experience in full stack development, but I was also honored to take on the role of Team Lead during the journey. Leading a passionate, talented team and contributing to impactful fintech solutions has been an incredible experience! 🙌🛠️.",
-      technologies: ["React", "Node.js", "FireBase", "MongoDB"]
-    },
+    { id: 1, title: "ChatBot for College", description: "Developed and deployed a custom NLP-based Chatbot. Implemented Natural Language Processing for intent detection, keyword extraction, and response mapping. Fully responsive across mobile and desktop devices with smooth UX. Designed backend APIs with Node.js for handling user queries and dynamic responses.", tech: ["React", "Node.js", "NLP"], image: chatbot, github1: "https://github.com/spk-2005/rvrbot", github2: "https://github.com/spk-2005/rvrjcbot-backend", live: "https://rvrbot.netlify.app/", featured: true, category: "AI/ML", accent: "#00f5ff" },
+    { id: 2, title: "Online Examination System", description: "Scalable Online Exam Portal with secure JWT authentication serving 1000+ concurrent users. The platform generated 3,700+ test submissions and ₹1,00,000+ in revenue with positive client feedback. MongoDB for dynamic data storage, PDF export, and responsive layouts.", tech: ["Next.js", "MongoDB", "JWT"], image: online, github1: "https://github.com/spk-2005/online-exam-departmental-test", github2: "#", live: "https://departmental-tests.netlify.app/", featured: true, category: "Web App", accent: "#b347ff" },
+    { id: 3, title: "SPK-HUB", description: "Platform for real-time updates on current events, history, mysteries, and lifestyle topics. Fully responsive with Image-to-PDF and Text-to-PDF converters and SEO Optimization.", tech: ["React", "Express", "MongoDB"], image: spkhub, github1: "https://github.com/spk-2005/SPKHUB-FRONTEND", github2: "https://github.com/spk-2005/SPKHUB-backend", live: "https://spkhub.netlify.app/", featured: false, category: "Content Platform", accent: "#ff6b9d" },
+    { id: 4, title: "SSEM School Website", description: "Custom prototype website for a school — clean, engaging, and informative for students, parents, and staff. Modern design patterns with fully responsive layouts.", tech: ["React", "Express", "MongoDB"], image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=500&h=300&fit=crop", github1: "https://github.com/spk-2005/ssem", github2: "#", live: "https://ssem2007.netlify.app/", featured: false, category: "Educational", accent: "#34d399" },
+    { id: 5, title: "Krushi Kalpa", description: "Bridging Farmers & Consumers. A web application to empower farmers and connect them with consumers directly. Part of RUPAJNA 2025 Intra-College Prototype Competition — won 2nd place.", tech: ["React", "Express", "MongoDB"], image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500&h=300&fit=crop", github1: "https://github.com/spk-2005/krushikalpa", github2: "#", live: "", featured: false, category: "Agriculture Tech", accent: "#fbbf24" },
+    { id: 6, title: "SWASTIK", description: "Visionary Prototype for Social Impact. Designed to tackle pressing social issues through collective action and innovation. Engages communities across four impactful categories.", tech: ["React", "Express", "MongoDB"], image: swasthik, github1: "#", github2: "#", live: "", featured: false, category: "Social Impact", accent: "#f97316" }
   ];
 
   const skillCategories = [
-    {
-      category: "Frontend",
-      icon: <Monitor className="w-6 h-6" />,
-      skills: [
-        { name: "React.js", icon: <FileCode className="w-4 h-4" /> },
-        { name: "Next.js", icon: <Layers className="w-4 h-4" /> },
-        { name: "JavaScript (ES6+)", icon: <Code2 className="w-4 h-4" /> },
-        { name: "HTML5", icon: <Layout className="w-4 h-4" /> },
-        { name: "CSS3", icon: <Palette className="w-4 h-4" /> },
-        { name: "Tailwind CSS", icon: <Wrench className="w-4 h-4" /> }
-      ],
-      color: "from-cyan-400 to-blue-500",
-      delay: 0
-    },
-    {
-      category: "Backend", 
-      icon: <Server className="w-6 h-6" />,
-      skills: [
-        { name: "Node.js", icon: <Cpu className="w-4 h-4" /> },
-        { name: "Express.js", icon: <Terminal className="w-4 h-4" /> },
-        { name: "REST APIs", icon: <Globe className="w-4 h-4" /> }
-      ],
-      color: "from-purple-400 to-pink-500",
-      delay: 0.2
-    },
-    {
-      category: "Database",
-      icon: <Database className="w-6 h-6" />,
-      skills: [
-        { name: "MongoDB Atlas", icon: <Database className="w-4 h-4" /> },
-        { name: "Airtable", icon: <Layers className="w-4 h-4" /> },
-        { name: "Firebase", icon: <Zap className="w-4 h-4" /> },
-        { name: "MySql", icon: <Server className="w-4 h-4" /> }
-      ],
-      color: "from-green-400 to-emerald-500",
-      delay: 0.4
-    },
-    {
-      category: "Cloud & Deployment",
-      icon: <Cloud className="w-6 h-6" />,
-      skills: [
-        { name: "Render", icon: <Cloud className="w-4 h-4" /> },
-        { name: "Netlify", icon: <Globe className="w-4 h-4" /> },
-        { name: "Vercel", icon: <Zap className="w-4 h-4" /> }
-      ],
-      color: "from-yellow-400 to-orange-500",
-      delay: 0.6
-    },
-    {
-      category: "Tools",
-      icon: <Settings className="w-6 h-6" />,
-      skills: [
-        { name: "Git & GitHub", icon: <Github className="w-4 h-4" /> },
-        { name: "VS Code", icon: <Code2 className="w-4 h-4" /> }
-      ],
-      color: "from-indigo-400 to-purple-500",
-      delay: 0.8
-    },
-    {
-      category: "App Development",
-      icon: <Smartphone className="w-6 h-6" />,
-      skills: [
-        { name: "React Native", icon: <Smartphone className="w-4 h-4" /> }
-      ],
-      color: "from-pink-400 to-red-500",
-      delay: 1.0
-    }
+    { category: "Frontend", icon: <Monitor className="w-5 h-5" />, skills: [{ name: "React.js", icon: <FileCode className="w-4 h-4" /> }, { name: "Next.js", icon: <Layers className="w-4 h-4" /> }, { name: "JavaScript ES6+", icon: <Code2 className="w-4 h-4" /> }, { name: "TypeScript", icon: <FileCode className="w-4 h-4" /> }, { name: "HTML5 / CSS3", icon: <Layout className="w-4 h-4" /> }, { name: "Tailwind CSS", icon: <Wrench className="w-4 h-4" /> }, { name: "Redux", icon: <Layers className="w-4 h-4" /> }], color: "#00f5ff", glow: "rgba(0,245,255,0.3)" },
+    { category: "Backend", icon: <Server className="w-5 h-5" />, skills: [{ name: "Node.js", icon: <Cpu className="w-4 h-4" /> }, { name: "Express.js", icon: <Terminal className="w-4 h-4" /> }, { name: "FastAPI", icon: <Zap className="w-4 h-4" /> }, { name: "Microservices", icon: <Layers className="w-4 h-4" /> }, { name: "REST APIs", icon: <Globe className="w-4 h-4" /> }, { name: "WebSockets", icon: <Zap className="w-4 h-4" /> }], color: "#b347ff", glow: "rgba(179,71,255,0.3)" },
+    { category: "Database", icon: <Database className="w-5 h-5" />, skills: [{ name: "PostgreSQL", icon: <Database className="w-4 h-4" /> }, { name: "MongoDB Atlas", icon: <Database className="w-4 h-4" /> }, { name: "MySQL", icon: <Server className="w-4 h-4" /> }, { name: "Redis", icon: <Zap className="w-4 h-4" /> }, { name: "Firebase", icon: <Zap className="w-4 h-4" /> }, { name: "Airtable", icon: <Layers className="w-4 h-4" /> }], color: "#34d399", glow: "rgba(52,211,153,0.3)" },
+    { category: "Cloud & DevOps", icon: <Cloud className="w-5 h-5" />, skills: [{ name: "CI/CD Pipelines", icon: <Zap className="w-4 h-4" /> }, { name: "Jenkins", icon: <Settings className="w-4 h-4" /> }, { name: "Netlify", icon: <Globe className="w-4 h-4" /> }, { name: "Render", icon: <Cloud className="w-4 h-4" /> }, { name: "Vercel", icon: <Zap className="w-4 h-4" /> }], color: "#fbbf24", glow: "rgba(251,191,36,0.3)" },
+    { category: "Languages", icon: <Code2 className="w-5 h-5" />, skills: [{ name: "Python", icon: <FileCode className="w-4 h-4" /> }, { name: "JavaScript", icon: <Code2 className="w-4 h-4" /> }, { name: "TypeScript", icon: <FileCode className="w-4 h-4" /> }, { name: "Java", icon: <Cpu className="w-4 h-4" /> }, { name: "C", icon: <Terminal className="w-4 h-4" /> }], color: "#818cf8", glow: "rgba(129,140,248,0.3)" },
+    { category: "Mobile Dev", icon: <Smartphone className="w-5 h-5" />, skills: [{ name: "React Native", icon: <Smartphone className="w-4 h-4" /> }], color: "#f472b6", glow: "rgba(244,114,182,0.3)" }
   ];
 
+  // ── CINEMATIC LOADING SCREEN ──
   if (isLoading) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <div className="text-center">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-transparent border-t-cyan-400 border-r-purple-400 rounded-full animate-spin mx-auto mb-6"></div>
-            <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-b-pink-400 border-l-blue-400 rounded-full animate-spin mx-auto" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+      <div style={{
+        position: 'fixed', inset: 0, background: loadingPhase === 3 ? '#fff' : '#000',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 9999, overflow: 'hidden',
+        transition: loadingPhase === 3 ? 'background 0.4s ease' : 'none'
+      }}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+          @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+          @keyframes scan-v { 0%{top:-5%} 100%{top:105%} }
+          @keyframes blink2 { 0%,100%{opacity:1} 50%{opacity:0} }
+          @keyframes reveal-up { from{opacity:0;transform:translateY(40px) skewY(2deg)} to{opacity:1;transform:translateY(0) skewY(0)} }
+          @keyframes reveal-line { from{scaleX:0} to{scaleX:1} }
+          @keyframes glitch-spk {
+            0%{clip-path:none;transform:none;opacity:1}
+            5%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-6px);filter:hue-rotate(180deg);opacity:0.85}
+            10%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(6px);filter:hue-rotate(300deg)}
+            15%{clip-path:none;transform:none;opacity:1;filter:none}
+            85%{clip-path:none;transform:none;opacity:1}
+            87%{clip-path:polygon(0 5%,100% 5%,100% 25%,0 25%);transform:translateX(-4px)}
+            90%{clip-path:none;transform:none}
+            100%{clip-path:none;transform:none;opacity:1}
+          }
+          @keyframes letter-emerge {
+            0%{opacity:0;transform:scale(3) translateZ(0);filter:blur(20px)}
+            60%{opacity:1;filter:blur(0)}
+            100%{opacity:1;transform:scale(1);filter:blur(0)}
+          }
+          @keyframes chromatic {
+            0%,100%{text-shadow:2px 0 #00f5ff,-2px 0 #f472b6}
+            25%{text-shadow:4px 0 #00f5ff,-4px 0 #f472b6}
+            50%{text-shadow:-2px 0 #00f5ff,2px 0 #b347ff}
+            75%{text-shadow:0px 0 #00f5ff,0px 0 #f472b6}
+          }
+          @keyframes hline-slide { from{width:0;opacity:0} to{width:100%;opacity:1} }
+          @keyframes sub-fade { from{opacity:0;letter-spacing:20px} to{opacity:0.7;letter-spacing:8px} }
+          @keyframes warp { 0%{transform:scaleX(1)} 50%{transform:scaleX(1.04)} 100%{transform:scaleX(1)} }
+          @keyframes vignette-pulse { 0%,100%{opacity:0.7} 50%{opacity:0.9} }
+          @keyframes data-scroll { from{transform:translateY(0)} to{transform:translateY(-50%)} }
+        `}</style>
+
+        {/* Starfield bg */}
+        {loadingPhase >= 1 && (
+          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+            {Array.from({ length: 120 }, (_, i) => (
+              <div key={i} style={{
+                position: 'absolute',
+                width: Math.random() * 2 + 0.5 + 'px',
+                height: Math.random() * 2 + 0.5 + 'px',
+                borderRadius: '50%',
+                background: '#fff',
+                left: Math.random() * 100 + '%',
+                top: Math.random() * 100 + '%',
+                opacity: Math.random() * 0.7 + 0.1,
+                animation: `blink2 ${2 + Math.random() * 4}s ${Math.random() * 3}s infinite`
+              }} />
+            ))}
           </div>
-          <div className="text-cyan-400 text-sm tracking-widest font-light">INITIALIZING GALAXY</div>
-          <div className="flex justify-center mt-4 space-x-1">
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-            <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-          </div>
+        )}
+
+        {/* Horizontal scan lines for cinematic feel */}
+        {loadingPhase >= 1 && (
+          <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px)', pointerEvents: 'none', zIndex: 2 }} />
+        )}
+
+        {/* Vignette */}
+        {loadingPhase >= 1 && (
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 80% at 50% 50%,transparent 30%,rgba(0,0,0,0.85) 100%)', pointerEvents: 'none', zIndex: 2, animation: 'vignette-pulse 4s ease-in-out infinite' }} />
+        )}
+
+        {/* Vertical scan sweep */}
+        {loadingPhase >= 1 && loadingPhase < 3 && (
+          <div style={{ position: 'absolute', left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg,transparent,rgba(0,245,255,0.6),rgba(255,255,255,0.8),rgba(0,245,255,0.6),transparent)', animation: 'scan-v 2.2s linear infinite', zIndex: 5, boxShadow: '0 0 20px rgba(0,245,255,0.4)' }} />
+        )}
+
+        {/* Scrolling data columns */}
+        {loadingPhase >= 1 && (
+          <>
+            {[{ left: '5%' }, { right: '5%' }].map((pos, idx) => (
+              <div key={idx} style={{ position: 'absolute', top: 0, ...pos, width: '1px', background: 'linear-gradient(180deg,transparent,rgba(0,245,255,0.15),transparent)', height: '100%', zIndex: 3 }}>
+                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '7px', color: 'rgba(0,245,255,0.2)', writingMode: 'vertical-rl', letterSpacing: '2px', animation: 'data-scroll 8s linear infinite', height: '200%' }}>
+                  {'INIT_SEQUENCE.SYS_BOOT.NEURAL_LINK.ESTABLISH.PRASANNA.KUMAR.SIMHADRI.FULL.STACK.DEV.v2.0.'.repeat(8)}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/* Main content */}
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 10, fontFamily: "'Orbitron',sans-serif", padding: '0 20px' }}>
+
+          {/* Top classification label */}
+          {loadingPhase >= 1 && (
+            <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '8px', color: 'rgba(0,245,255,0.5)', marginBottom: '28px', animation: 'sub-fade 0.8s 0.2s both' }}>
+              ◈ PORTFOLIO SYSTEM v2.0 ◈
+            </div>
+          )}
+
+          {/* Top horizontal rule */}
+          {loadingPhase >= 1 && (
+            <div style={{ height: '1px', background: 'linear-gradient(90deg,transparent,rgba(0,245,255,0.6),rgba(255,255,255,0.8),rgba(0,245,255,0.6),transparent)', marginBottom: '32px', animation: 'hline-slide 0.6s 0.3s both', boxShadow: '0 0 10px rgba(0,245,255,0.3)' }} />
+          )}
+
+          {/* THE BIG SPK LETTERS */}
+          {loadingPhase >= 1 && (
+            <div style={{ position: 'relative', marginBottom: '8px' }}>
+              {/* Glow layer behind */}
+              <div style={{
+                position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center',
+                fontFamily: "'Orbitron',sans-serif", fontWeight: 900,
+                fontSize: 'clamp(100px,22vw,260px)',
+                letterSpacing: '0.15em',
+                color: 'transparent',
+                filter: 'blur(40px)',
+                background: 'linear-gradient(135deg,#00f5ff,#b347ff,#f472b6)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                opacity: 0.4,
+                userSelect: 'none'
+              }}>SPK</div>
+
+              {/* Main letters with per-letter animation */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.05em' }}>
+                {['S', 'P', 'K'].map((letter, i) => (
+                  <div key={letter} style={{
+                    fontFamily: "'Orbitron',sans-serif",
+                    fontWeight: 900,
+                    fontSize: 'clamp(100px,22vw,260px)',
+                    lineHeight: 1,
+                    background: 'linear-gradient(180deg,#ffffff 0%,#00f5ff 40%,#b347ff 75%,#f472b6 100%)',
+                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                    animation: `letter-emerge 0.9s ${0.4 + i * 0.15}s both, glitch-spk 6s ${2 + i * 0.3}s infinite, chromatic 3s ${1 + i * 0.4}s 1`,
+                    filter: `drop-shadow(0 0 30px rgba(0,245,255,0.4)) drop-shadow(0 0 60px rgba(179,71,255,0.2))`,
+                    letterSpacing: '0.08em'
+                  }}>
+                    {letter}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Subtitle: full name */}
+          {loadingPhase >= 1 && (
+            <div style={{ animation: 'reveal-up 0.7s 1.1s both' }}>
+              <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 300, fontSize: 'clamp(11px,1.8vw,18px)', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                Simhadri Prasanna Kumar
+              </div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '4px', color: 'rgba(0,245,255,0.55)' }}>
+                FULL STACK DEVELOPER · SAAS BUILDER · ANDHRA PRADESH
+              </div>
+            </div>
+          )}
+
+          {/* Bottom rule */}
+          {loadingPhase >= 1 && (
+            <div style={{ height: '1px', background: 'linear-gradient(90deg,transparent,rgba(0,245,255,0.6),rgba(255,255,255,0.8),rgba(0,245,255,0.6),transparent)', marginTop: '32px', marginBottom: '28px', animation: 'hline-slide 0.6s 1.2s both', boxShadow: '0 0 10px rgba(0,245,255,0.3)' }} />
+          )}
+
+          {/* Progress */}
+          {loadingPhase >= 1 && (
+            <div style={{ animation: 'reveal-up 0.5s 1.4s both' }}>
+              <div style={{ width: '280px', margin: '0 auto 8px', height: '1px', background: 'rgba(255,255,255,0.07)', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,245,255,0.06) 4px,rgba(0,245,255,0.06) 6px)' }} />
+                <div style={{ height: '100%', width: `${Math.min(loadingProgress, 100)}%`, background: 'linear-gradient(90deg,#00f5ff,#b347ff,#f472b6)', transition: 'width 0.15s ease', boxShadow: '0 0 8px #00f5ff' }} />
+              </div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '4px', color: 'rgba(0,245,255,0.4)' }}>
+                {Math.min(Math.round(loadingProgress), 100).toString().padStart(3, '0')}% · INITIALIZING
+              </div>
+            </div>
+          )}
+
+          {/* Bottom classification */}
+          {loadingPhase >= 1 && (
+            <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '7px', letterSpacing: '6px', color: 'rgba(255,255,255,0.15)', marginTop: '24px', animation: 'sub-fade 0.8s 1.6s both' }}>
+              ◈ LOADING CREATIVE SYSTEMS ◈
+            </div>
+          )}
         </div>
+
+        {/* Corner accents */}
+        {loadingPhase >= 1 && ['tl', 'tr', 'bl', 'br'].map((pos) => (
+          <div key={pos} style={{
+            position: 'absolute',
+            width: '50px', height: '50px',
+            ...(pos.includes('t') ? { top: '24px' } : { bottom: '24px' }),
+            ...(pos.includes('l') ? { left: '24px' } : { right: '24px' }),
+            borderTop: pos.includes('t') ? '1px solid rgba(0,245,255,0.4)' : 'none',
+            borderBottom: pos.includes('b') ? '1px solid rgba(0,245,255,0.4)' : 'none',
+            borderLeft: pos.includes('l') ? '1px solid rgba(0,245,255,0.4)' : 'none',
+            borderRight: pos.includes('r') ? '1px solid rgba(0,245,255,0.4)' : 'none',
+            animation: 'reveal-up 0.5s 0.5s both',
+            zIndex: 10
+          }} />
+        ))}
       </div>
     );
   }
 
+  // ── MAIN ──
   return (
-    <div className="galaxy-container text-white min-h-screen relative overflow-x-hidden">
-      {/* Galaxy Background */}
-      <div className="galaxy-bg fixed inset-0 z-0">
-        {/* Animated Stars */}
-        {stars.map(star => (
-          <div
-            key={star.id}
-            className="star absolute rounded-full"
-            style={{
-              left: `${star.x}px`,
-              top: `${star.y}px`,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              opacity: Math.max(0.1, Math.min(1, star.opacity)),
-              background: `radial-gradient(circle, ${
-                star.size > 2 ? '#ffffff' : star.size > 1.5 ? '#ffffff' : '#ffffff'
-              }, transparent)`,
-              boxShadow: `0 0 ${star.size * 2}px ${
-                star.size > 2 ? '#9a9a9a' : star.size > 1.5 ? '#909092' : '#aaaaaa'
-              }`,
-            }}
-          />
-        ))}
-      </div>
+    <div style={{ background: '#000', color: '#fff', minHeight: '100vh', overflowX: 'hidden', fontFamily: "'Syne',sans-serif" }}>
 
-      {/* Custom Cursor */}
-      <div 
-        className="custom-cursor fixed pointer-events-none z-50"
-        style={{
-          left: mousePosition.x - 15,
-          top: mousePosition.y - 15,
-          transform: `scale(${isMenuOpen ? 1.5 : 1})`
-        }}
-      >
-        <div className="cursor-inner">
-          <div className="cursor-glow"></div>
+      {/* Fonts */}
+      <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+      <style>{`
+        *{cursor:none!important;box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{overflow-x:hidden}
+        ::-webkit-scrollbar{width:3px}
+        ::-webkit-scrollbar-track{background:#000}
+        ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00f5ff,#b347ff);border-radius:2px}
+
+        .c-dot{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#00f5ff,#b347ff);pointer-events:none;z-index:99999;will-change:transform;box-shadow:0 0 10px #00f5ff,0 0 20px rgba(0,245,255,0.4)}
+        .c-ring{position:fixed;top:0;left:0;width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,245,255,0.55);pointer-events:none;z-index:99998;will-change:transform;transition:width 0.2s,height 0.2s,border-color 0.2s}
+        .c-ring::after{content:'';position:absolute;inset:3px;border-radius:50%;border:1px solid rgba(179,71,255,0.25)}
+        .c-glow{position:fixed;top:0;left:0;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;z-index:99997;will-change:transform}
+
+        .scanlines{position:fixed;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px)}
+        .grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,245,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.018) 1px,transparent 1px);background-size:75px 75px}
+
+        .hc{position:fixed;width:36px;height:36px;pointer-events:none;z-index:3}
+        .hc.tl{top:10px;left:10px;border-top:1px solid rgba(0,245,255,0.35);border-left:1px solid rgba(0,245,255,0.35)}
+        .hc.tr{top:10px;right:10px;border-top:1px solid rgba(0,245,255,0.35);border-right:1px solid rgba(0,245,255,0.35)}
+        .hc.bl{bottom:10px;left:10px;border-bottom:1px solid rgba(0,245,255,0.35);border-left:1px solid rgba(0,245,255,0.35)}
+        .hc.br{bottom:10px;right:10px;border-bottom:1px solid rgba(0,245,255,0.35);border-right:1px solid rgba(0,245,255,0.35)}
+
+        @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+        @keyframes orbit-r{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+        @keyframes pulse-d{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.65)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        @keyframes bounce-y{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+        @keyframes aurora{0%,100%{opacity:0.15;transform:scaleX(0.3) translateX(-40%)}50%{opacity:0.8;transform:scaleX(1) translateX(0)}}
+        @keyframes glitch{0%,87%,100%{clip-path:none;transform:none}89%{clip-path:polygon(0 12%,100% 12%,100% 32%,0 32%);transform:translateX(-3px);filter:hue-rotate(90deg)}93%{clip-path:polygon(0 58%,100% 58%,100% 76%,0 76%);transform:translateX(3px)}96%{clip-path:none;transform:none;filter:none}}
+        @keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:0.6}}
+        @keyframes scan-h{0%{transform:translateX(-100%)}100%{transform:translateX(100vw)}}
+        @keyframes ds{0%{opacity:0;transform:translateY(-20px)}8%{opacity:1}92%{opacity:1}100%{opacity:0;transform:translateY(calc(100vh + 20px))}}
+        @keyframes trophy-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+
+        .section-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;color:#00f5ff;margin-bottom:12px;opacity:0.75;text-transform:uppercase}
+        .section-title{font-family:'Orbitron',sans-serif;font-weight:700;background:linear-gradient(135deg,#00f5ff,#b347ff,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+        .glass{background:rgba(0,245,255,0.018);backdrop-filter:blur(14px);border:1px solid rgba(0,245,255,0.1);border-radius:8px;transition:all 0.35s cubic-bezier(.23,1,.32,1)}
+        .glass:hover{background:rgba(0,245,255,0.032);border-color:rgba(0,245,255,0.22);transform:translateY(-4px);box-shadow:0 14px 44px rgba(0,245,255,0.07),inset 0 1px 0 rgba(0,245,255,0.08)}
+
+        .btn-p{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:2px;background:linear-gradient(135deg,#0070e0,#5a10c0);border:none;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;cursor:none;transition:all 0.3s;box-shadow:0 0 22px rgba(0,120,255,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
+        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,245,255,0.32)}
+
+        .btn-o{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:2px;background:transparent;border:1px solid rgba(0,245,255,0.38);color:#00f5ff;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;cursor:none;transition:all 0.3s}
+        .btn-o:hover{border-color:#00f5ff;background:rgba(0,245,255,0.05);box-shadow:0 0 18px rgba(0,245,255,0.18),inset 0 0 18px rgba(0,245,255,0.04);transform:translateY(-2px)}
+
+        .nav-link{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;background:none;border:none;cursor:none;transition:all 0.3s;padding:3px 0;position:relative;color:rgba(255,255,255,0.38)}
+        .nav-link::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:#00f5ff;transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
+        .nav-link.active{color:#00f5ff;text-shadow:0 0 10px rgba(0,245,255,0.55)}
+        .nav-link.active::after{transform:scaleX(1)}
+        .nav-link:hover:not(.active){color:rgba(255,255,255,0.75)}
+
+        .skill-card{background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:22px;transition:all 0.4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden}
+        .skill-card .top-bar{position:absolute;top:0;left:0;right:0;height:1px;opacity:0;transition:opacity 0.3s}
+        .skill-card:hover{transform:translateY(-7px) scale(1.015)}
+        .skill-card:hover .top-bar{opacity:1}
+
+        .skill-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:4px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:all 0.2s;color:rgba(255,255,255,0.58);font-size:13px}
+        .skill-item:hover{padding-left:14px}
+
+        .project-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+        .tech-tag{display:inline-block;padding:4px 11px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;transition:all 0.2s}
+        .social-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.38);transition:all 0.3s;backdrop-filter:blur(8px)}
+
+        .ds{position:fixed;font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(0,245,255,0.1);pointer-events:none;z-index:0;animation:ds linear infinite;writing-mode:vertical-rl;letter-spacing:3px}
+
+        .achievement-card{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:22px;transition:all 0.4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden}
+        .achievement-card:hover{transform:translateY(-5px);}
+
+        @media(max-width:768px){
+          .project-row{grid-template-columns:1fr!important}
+          .project-row>div{order:unset!important}
+          .about-grid{grid-template-columns:1fr!important;gap:36px!important}
+          .nav-d{display:none!important}
+          .nav-m{display:flex!important}
+          .achieve-grid{grid-template-columns:1fr!important}
+        }
+        @media(min-width:769px){.nav-m{display:none!important}}
+      `}</style>
+
+      <div ref={cursorDotRef} className="c-dot" />
+      <div ref={cursorRingRef} className="c-ring" />
+      <div ref={cursorGlowRef} className="c-glow" />
+
+      <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
+      <div className="grid-bg" />
+      <div className="scanlines" />
+
+      <div style={{ position: 'fixed', top: 0, bottom: 0, width: '1px', background: 'linear-gradient(180deg,transparent,rgba(0,245,255,0.22),transparent)', pointerEvents: 'none', zIndex: 1, animation: 'scan-h 10s linear infinite' }} />
+
+      <div className="hc tl" /><div className="hc tr" /><div className="hc bl" /><div className="hc br" />
+
+      {[{ top: '28%', c: 'rgba(0,245,255,0.18)', dur: '9s' }, { top: '66%', c: 'rgba(179,71,255,0.14)', dur: '13s', rev: true }].map((a, i) => (
+        <div key={i} style={{ position: 'fixed', top: a.top, left: 0, right: 0, height: '1px', background: `linear-gradient(90deg,transparent,${a.c},transparent)`, animation: `aurora ${a.dur} ease-in-out infinite${a.rev ? ' reverse' : ''}`, pointerEvents: 'none', zIndex: 0 }} />
+      ))}
+
+      {['10110011', '01001101', '11100010', '00111010'].map((s, i) => (
+        <div key={i} className="ds" style={{ left: `${6 + i * 26}%`, animationDuration: `${14 + i * 4}s`, animationDelay: `${i * 3.5}s` }}>
+          {s.repeat(24)}
         </div>
-      </div>
-      
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-40 backdrop-blur-lg bg-black/20 border-b border-cyan-500/30">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div 
-              className="text-xl font-light tracking-widest cursor-pointer text-cyan-400 hover:text-white transition-all duration-300 hover:drop-shadow-lg"
-              onClick={() => scrollToSection('home')}
-            >
-              SIMHADRI PRASANNA KUMAR
+      ))}
+
+      {/* ── NAV ── */}
+      <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 50, backdropFilter: 'blur(22px)', background: 'rgba(0,0,0,0.78)', borderBottom: '1px solid rgba(0,245,255,0.09)' }}>
+        <div style={{ height: '2px', background: 'linear-gradient(90deg,transparent,rgba(0,245,255,0.5) 25%,rgba(179,71,255,0.5) 75%,transparent)', opacity: 0.7 }} />
+        <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 22px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '58px' }}>
+            <div onClick={() => scrollToSection('home')} style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '17px', fontWeight: 900, letterSpacing: '5px', cursor: 'none', color: '#00f5ff', textShadow: '0 0 18px rgba(0,245,255,0.65)', animation: 'flicker 7s infinite' }}>
+              SPK
             </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {['home', 'about', 'skills', 'Projects', 'experience', 'contact'].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`text-sm tracking-widest uppercase transition-all duration-300 hover:drop-shadow-lg ${
-                    activeSection === section 
-                      ? 'text-cyan-400 drop-shadow-lg' 
-                      : 'text-gray-300 hover:text-cyan-400'
-                  }`}
-                >
-                  {section}
-                </button>
+            <div className="nav-d" style={{ display: 'flex', alignItems: 'center', gap: '26px' }}>
+              {['home', 'about', 'skills', 'Projects', 'experience', 'achievements', 'contact'].map(s => (
+                <button key={s} onClick={() => scrollToSection(s)} className={`nav-link ${activeSection === s ? 'active' : ''}`}>{s}</button>
               ))}
+              <button onClick={handleResumeDownload} className="btn-o" style={{ padding: '7px 16px', fontSize: '9px' }}>
+                <Download size={11} /> RESUME
+              </button>
             </div>
-            
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-cyan-400 hover:text-white transition-colors"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <button className="nav-m" onClick={() => setIsMenuOpen(v => !v)} style={{ display: 'none', background: 'none', border: 'none', color: '#00f5ff', cursor: 'none', alignItems: 'center' }}>
+              {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
             </button>
           </div>
         </div>
-        
-        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full backdrop-blur-lg bg-black/40 border-b border-cyan-500/30">
-            <div className="flex flex-col space-y-4 p-6">
-              {['home', 'about', 'skills', 'Projects', 'experience', 'contact'].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className="text-left text-sm tracking-widest uppercase text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  {section}
-                </button>
-              ))}
-            </div>
+          <div style={{ background: 'rgba(0,0,0,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(0,245,255,0.08)', padding: '14px 22px' }}>
+            {['home', 'about', 'skills', 'Projects', 'experience', 'achievements', 'contact'].map(s => (
+              <button key={s} onClick={() => scrollToSection(s)} style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'rgba(255,255,255,0.55)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', cursor: 'none', padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>{s}</button>
+            ))}
+            <button onClick={handleResumeDownload} className="btn-o" style={{ marginTop: '14px' }}><Download size={12} /> DOWNLOAD RESUME</button>
           </div>
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section 
-        id="home" 
-        ref={(el) => sectionsRef.current.home = el}
-        className="min-h-screen flex items-center justify-center relative px-6"
-      >
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl font-light mb-4 tracking-tight text-glow">
-              <span className="block overflow-hidden">
-                <span className="block transition-transform duration-1000 translate-y-0 animate-fade-in-up text-gradient">
-                  PRASANNA KUMAR
-                </span>
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-cyan-300 mb-8 transition-opacity duration-1000 delay-400 opacity-100 animate-fade-in">
-              Full Stack Developer & Creative Technologist
-            </p>
-            
-            <div className="flex items-center justify-center space-x-6 transition-opacity duration-1000 delay-600 opacity-100 animate-fade-in">
-              <a href="https://github.com/spk-2005" className="social-link">
-                <Github size={20} />
+      {/* ── HERO ── */}
+      <section id="home" ref={el => sectionsRef.current.home = el} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 10, padding: '0 22px' }}>
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: '620px', height: '620px', pointerEvents: 'none' }}>
+          {[{ s: '100%', c: 'rgba(0,245,255,0.06)', d: '44s' }, { s: 'calc(100% - 100px)', c: 'rgba(179,71,255,0.06)', d: '31s', r: true }, { s: 'calc(100% - 200px)', c: 'rgba(244,114,182,0.06)', d: '21s' }].map((ring, i) => (
+            <div key={i} style={{ position: 'absolute', top: '50%', left: '50%', width: ring.s, height: ring.s, marginTop: `calc(-${ring.s}/2)`, marginLeft: `calc(-${ring.s}/2)`, borderRadius: '50%', border: `1px solid ${ring.c}`, animation: `orbit-r ${ring.d} linear infinite${ring.r ? ' reverse' : ''}` }} />
+          ))}
+          {[{ c: '#00f5ff', r: 310, d: '44s' }, { c: '#b347ff', r: 260, d: '31s', rev: true }, { c: '#f472b6', r: 210, d: '21s' }].map((dot, i) => (
+            <div key={i} style={{ position: 'absolute', top: `calc(50% - ${dot.r}px)`, left: '50%', width: '7px', height: '7px', marginLeft: '-3.5px', borderRadius: '50%', background: dot.c, boxShadow: `0 0 12px ${dot.c}, 0 0 24px ${dot.c}40`, transformOrigin: `0 ${dot.r}px`, animation: `orbit-r ${dot.d} linear infinite${dot.rev ? ' reverse' : ''}` }} />
+          ))}
+        </div>
+
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,rgba(0,245,255,0.05),transparent)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'linear-gradient(180deg,transparent,rgba(0,245,255,0.05),transparent)', pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: '840px', textAlign: 'center', position: 'relative', zIndex: 10 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '34px', padding: '5px 16px', background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(52,211,153,0.28)', borderRadius: '2px', backdropFilter: 'blur(8px)' }}>
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34d399', boxShadow: '0 0 8px #34d399', animation: 'pulse-d 2s ease-in-out infinite' }} />
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '3px', color: '#34d399' }}>STATUS: AVAILABLE FOR WORK</span>
+          </div>
+
+          <h1 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 'clamp(38px,8vw,94px)', fontWeight: 900, lineHeight: 0.93, marginBottom: '4px', background: 'linear-gradient(135deg,#fff 0%,#00f5ff 30%,#b347ff 65%,#f472b6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', letterSpacing: '-2px', filter: 'drop-shadow(0 0 28px rgba(0,245,255,0.22))', animation: 'glitch 9s infinite' }}>
+            PRASANNA
+          </h1>
+          <h1 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 'clamp(38px,8vw,94px)', fontWeight: 900, lineHeight: 0.93, marginBottom: '38px', background: 'linear-gradient(135deg,#00f5ff 0%,#b347ff 50%,#f472b6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', letterSpacing: '-2px' }}>
+            KUMAR
+          </h1>
+
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(12px,2vw,18px)', color: '#b347ff', letterSpacing: '3px', marginBottom: '50px', height: '24px', textShadow: '0 0 12px rgba(179,71,255,0.45)' }}>
+            <span style={{ color: 'rgba(0,245,255,0.4)' }}>&gt;&nbsp;</span>{typedText}<span style={{ animation: 'blink 1s step-end infinite', color: '#00f5ff' }}>_</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '48px' }}>
+            <button onClick={() => scrollToSection('Projects')} className="btn-p">VIEW PROJECTS <ArrowRight size={13} /></button>
+            <button onClick={handleResumeDownload} className="btn-o"><Download size={13} /> DOWNLOAD RESUME</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            {[{ href: "https://github.com/spk-2005", icon: <Github size={17} />, hc: '#00f5ff' }, { href: "https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/", icon: <Linkedin size={17} />, hc: '#b347ff' }, { href: "mailto:prasannasimha5002@gmail.com", icon: <Mail size={17} />, hc: '#f472b6' }].map((s, i) => (
+              <a key={i} href={s.href} className="social-icon"
+                onMouseEnter={e => { e.currentTarget.style.color = s.hc; e.currentTarget.style.borderColor = s.hc + '48'; e.currentTarget.style.background = s.hc + '10'; e.currentTarget.style.boxShadow = `0 0 16px ${s.hc}28`; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.025)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                {s.icon}
               </a>
-              <a href="https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/" className="social-link">
-                <Linkedin size={20} />
-              </a>
-              <a href="mailto:prasannasimha5002@gmail.com" className="social-link">
-                <Mail size={20} />
-              </a>
-            </div>
+            ))}
           </div>
         </div>
-        
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <ChevronDown className="animate-bounce text-cyan-400 glow-pulse" size={24} />
+
+        <div style={{ position: 'absolute', bottom: '28px', left: '50%', color: '#00f5ff', animation: 'bounce-y 2s ease-in-out infinite', opacity: 0.55 }}>
+          <ChevronDown size={20} />
         </div>
       </section>
 
-      {/* About Section */}
-      <section 
-        id="about" 
-        ref={(el) => sectionsRef.current.about = el}
-        className="min-h-screen flex items-center px-6 py-20 relative z-10"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+      {/* ── ABOUT ── */}
+      <section id="about" ref={el => sectionsRef.current.about = el} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto', width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '72px', alignItems: 'center' }} className="about-grid">
             <div>
-              <h2 className="text-4xl md:text-5xl font-light mb-8 opacity-100 animate-fade-in text-gradient">
-                About Me
-              </h2>
-              
-              <div className="space-y-6 text-gray-200 text-lg leading-relaxed opacity-100 animate-fade-in">
-                <p>
-                  I'm a passionate full-stack developer with over 2 years of experience building 
-                  scalable web applications and innovative digital solutions. I love turning 
-                  complex problems into simple, beautiful designs.
-                </p>
-                
-                <p>
-                  My expertise spans modern JavaScript frameworks and 
-                  database design. I believe in writing clean, maintainable code and creating 
-                  exceptional user experiences.
-                </p>
-                
-                <p>
-                  When I'm not coding, you'll find me exploring new technologies, contributing 
-                  to open source projects, or enjoying a good cup of coffee while reading about 
-                  the latest in web development.
-                </p>
+              <div className="section-tag">01. ABOUT ME</div>
+              <h2 className="section-title" style={{ fontSize: 'clamp(26px,4vw,44px)', lineHeight: 1.1, marginBottom: '26px' }}>Crafting Digital<br />Experiences</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: 'rgba(255,255,255,0.62)', lineHeight: 1.85, fontSize: '15px' }}>
+                <p>Final-year Computer Science student specializing in building scalable <strong style={{ color: '#00f5ff' }}>SaaS products</strong> and real-world software solutions.</p>
+                <p>Experienced in developing impactful APIs and production-ready applications capable of handling <strong style={{ color: '#b347ff' }}>1000+ concurrent users</strong>. Passionate about AI-driven systems, backend engineering, and modern software development.</p>
+                <p>When not coding — exploring new tech, contributing to open source, or reading about the latest in web development.</p>
               </div>
-              
-              <div className="mt-8 flex flex-wrap gap-4 opacity-100 animate-fade-in">
-                <div className="flex items-center space-x-2 text-cyan-400">
-                  <MapPin size={16} />
-                  <span>Andhra Pradesh, India</span>
-                </div>
-                <div className="flex items-center space-x-2 text-cyan-400">
-                  <Calendar size={16} />
-                  <span>Available for work</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '18px', marginTop: '26px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#b347ff', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px' }}><MapPin size={12} /> ANDHRA PRADESH, INDIA</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#34d399', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px' }}>
+                  <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#34d399', boxShadow: '0 0 7px #34d399', animation: 'pulse-d 2s infinite' }} /> OPEN TO OPPORTUNITIES
                 </div>
               </div>
+              <button onClick={handleResumeDownload} className="btn-o" style={{ marginTop: '30px' }}><Download size={12} /> VIEW MY RESUME</button>
             </div>
-            
-            <div className="opacity-100 animate-fade-in">
-              <div className="glass-card p-8 rounded-lg">
-                <div className="text-center mb-8">
-                  <div className="w-32 h-32 mx-auto mb-6 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full animate-spin-slow opacity-75"></div>
-                    <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
-                      <User size={48} className="text-cyan-400" />
+
+            <div>
+              <div className="glass" style={{ padding: '26px', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ position: 'relative', width: '56px', height: '56px', flexShrink: 0 }}>
+                    <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'linear-gradient(135deg,#00f5ff,#b347ff,#f472b6)', animation: 'orbit-r 5s linear infinite', padding: '2px' }}>
+                      <div style={{ background: '#030606', borderRadius: '50%', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <User size={22} style={{ color: '#00f5ff' }} />
+                      </div>
                     </div>
                   </div>
-                  <h3 className="text-xl font-light text-gradient mb-2">Full Stack Developer</h3>
-                  <p className="text-gray-400 text-sm">Crafting digital experiences</p>
+                  <div>
+                    <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '13px', color: '#fff', marginBottom: '3px' }}>Prasanna Kumar</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', color: '#00f5ff', letterSpacing: '2px', opacity: 0.75 }}>FULL STACK DEVELOPER</div>
+                  </div>
                 </div>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Projects Completed</span>
-                    <span className="text-cyan-400 font-bold">10+</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Years Experience</span>
-                    <span className="text-purple-400 font-bold">2+</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Technologies Mastered</span>
-                    <span className="text-pink-400 font-bold">10+</span>
-                  </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1px', background: 'rgba(0,245,255,0.04)', borderRadius: '5px', overflow: 'hidden' }}>
+                  {[{ l: 'Projects', v: '10+', c: '#00f5ff' }, { l: 'CGPA', v: '8.5', c: '#b347ff' }, { l: 'Revenue', v: '₹1L+', c: '#f472b6' }].map(s => (
+                    <div key={s.l} style={{ padding: '13px 6px', background: 'rgba(0,0,0,0.45)', textAlign: 'center' }}>
+                      <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '17px', color: s.c, fontWeight: 700, textShadow: `0 0 8px ${s.c}55` }}>{s.v}</div>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '7px', color: 'rgba(255,255,255,0.3)', letterSpacing: '1px', marginTop: '3px' }}>{s.l.toUpperCase()}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              {/* Personal Interests */}
-              <div className="mt-8 glass-card p-6 rounded-lg">
-                <h3 className="text-sm font-medium text-cyan-400 mb-4 tracking-widest uppercase">
-                  Interests
-                </h3>
-                <div className="flex flex-wrap gap-4">
-                  {[
-                    { icon: <Camera size={16} />, label: "Movies" },
-                    { icon: <Music size={16} />, label: "Music" }
-                  ].map((interest) => (
-                    <div key={interest.label} className="flex items-center space-x-2 text-gray-300 hover:text-cyan-300 transition-colors">
-                      {interest.icon}
-                      <span className="text-sm">{interest.label}</span>
+              <div className="glass" style={{ padding: '18px', borderColor: 'rgba(179,71,255,0.1)', marginBottom: '14px' }}>
+                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '3px', color: '#b347ff', marginBottom: '12px' }}>// INTERESTS</div>
+                <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap' }}>
+                  {[{ icon: <Camera size={13} />, label: 'Movies' }, { icon: <Music size={13} />, label: 'Music' }].map(item => (
+                    <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 13px', background: 'rgba(179,71,255,0.06)', border: '1px solid rgba(179,71,255,0.18)', borderRadius: '2px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>
+                      <span style={{ color: '#b347ff' }}>{item.icon}</span> {item.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Certifications quick card */}
+              <div className="glass" style={{ padding: '18px', borderColor: 'rgba(52,211,153,0.1)' }}>
+                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '3px', color: '#34d399', marginBottom: '12px' }}>// CERTIFICATIONS</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                  {[{ label: 'Full Stack Web Dev & Data Analytics', org: 'AICTE' }, { label: 'Python Programming', org: 'NPTEL' }].map(cert => (
+                    <div key={cert.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 10px', background: 'rgba(52,211,153,0.04)', border: '1px solid rgba(52,211,153,0.1)', borderRadius: '4px' }}>
+                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>{cert.label}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', color: '#34d399', letterSpacing: '2px' }}>{cert.org}</span>
                     </div>
                   ))}
                 </div>
@@ -501,909 +660,348 @@ const Portfolio3D = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
-      <section 
-        id="skills" 
-        ref={(el) => sectionsRef.current.skills = el}
-        className="min-h-screen px-6 py-20 relative z-10"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-8 opacity-100 animate-fade-in text-gradient">
-              Skills & Expertise
-            </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto opacity-100 animate-fade-in">
-              Mastering the technologies that power the modern web
+      {/* ── SKILLS ── */}
+      <section id="skills" ref={el => sectionsRef.current.skills = el} style={{ padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <div className="section-tag">02. TECH ARSENAL</div>
+            <h2 className="section-title" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>Skills & Expertise</h2>
+            <p style={{ color: 'rgba(255,255,255,0.3)', marginTop: '10px', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '3px' }}>
+              // SKILL MATRIX LOADED
             </p>
           </div>
-          
-          {/* Skills Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {skillCategories.map((category, index) => (
-              <div 
-                key={category.category}
-                className="skill-card opacity-100 animate-fade-in relative overflow-hidden"
-                style={{animationDelay: `${category.delay}s`}}
-              >
-                <div className="glass-card p-6 rounded-lg h-full relative group">
-                  {/* Racing light effect */}
-                  <div className="racing-border"></div>
-                  
-                  {/* Category Header */}
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className={`p-3 rounded-lg bg-gradient-to-r ${category.color} glow-pulse`}>
-                      {category.icon}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '16px' }}>
+            {skillCategories.map(cat => (
+              <div key={cat.category} className="skill-card"
+                onMouseEnter={e => { e.currentTarget.style.borderColor = cat.color + '30'; e.currentTarget.style.boxShadow = `0 18px 52px ${cat.glow},inset 0 1px 0 ${cat.color}12`; e.currentTarget.style.transform = 'translateY(-7px) scale(1.015)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}>
+                <div className="top-bar" style={{ background: `linear-gradient(90deg,transparent,${cat.color},transparent)` }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '11px', marginBottom: '16px' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: cat.color + '10', border: `1px solid ${cat.color}28`, color: cat.color }}>
+                    {cat.icon}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '11px', fontWeight: 600, color: '#fff' }}>{cat.category}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', color: 'rgba(255,255,255,0.28)', letterSpacing: '1px' }}>{cat.skills.length} modules</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                  {cat.skills.map(sk => (
+                    <div key={sk.name} className="skill-item"
+                      onMouseEnter={e => { e.currentTarget.style.background = cat.color + '08'; e.currentTarget.style.borderColor = cat.color + '1c'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.paddingLeft = '14px'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.58)'; e.currentTarget.style.paddingLeft = '10px'; }}>
+                      <span style={{ color: cat.color, opacity: 0.75, flexShrink: 0 }}>{sk.icon}</span>{sk.name}
                     </div>
-                    <h3 className="text-xl font-medium text-gradient">{category.category}</h3>
-                  </div>
-                  
-                  {/* Skills List with Icons */}
-                  <div className="space-y-3">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div 
-                        key={skill.name}
-                        className="skill-item flex items-center space-x-3 opacity-100 animate-fade-in hover:bg-white/5 p-2 rounded-lg transition-all duration-300"
-                        style={{animationDelay: `${category.delay + skillIndex * 0.1}s`}}
-                      >
-                        <div className="skill-icon p-1 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 rounded">
-                          {skill.icon}
-                        </div>
-                        <span className="text-gray-200 hover:text-white transition-colors">
-                          {skill.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Proficiency Bar */}
-                  <div className="mt-6">
-                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full bg-gradient-to-r ${category.color} racing-progress rounded-full`}
-                        style={{animationDelay: `${category.delay + 0.5}s`}}
-                      ></div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '48px' }}>
+            <button onClick={() => scrollToSection('Projects')} className="btn-p">VIEW MY PROJECTS <ArrowRight size={13} /></button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROJECTS ── */}
+      <section id="Projects" ref={el => sectionsRef.current.Projects = el} style={{ padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '76px' }}>
+            <div className="section-tag">03. PROJECTS</div>
+            <h2 className="section-title" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>My Work</h2>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '88px' }}>
+            {projects.map((p, i) => (
+              <div key={p.id} className="project-row"
+                onMouseEnter={() => setHoveredProject(p.id)}
+                onMouseLeave={() => setHoveredProject(null)}>
+                <div style={{ order: i % 2 === 1 ? 2 : 1 }}>
+                  <div style={{ position: 'relative', borderRadius: '7px', overflow: 'hidden', border: `1px solid ${hoveredProject === p.id ? p.accent + '38' : 'rgba(255,255,255,0.07)'}`, transition: 'all 0.4s', boxShadow: hoveredProject === p.id ? `0 0 0 1px ${p.accent}18, 0 18px 52px ${p.accent}15` : 'none' }}>
+                    {hoveredProject === p.id && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: `linear-gradient(90deg,transparent,${p.accent},transparent)`, zIndex: 3, animation: 'scan-h 1.6s linear infinite' }} />}
+                    <div style={{ position: 'absolute', top: '11px', left: '11px', zIndex: 2, padding: '3px 9px', background: p.accent + '1e', border: `1px solid ${p.accent}38`, color: p.accent, fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', borderRadius: '1px' }}>
+                      {p.category.toUpperCase()}
+                    </div>
+                    <div style={{ position: 'absolute', top: '11px', right: '11px', zIndex: 2, width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(0,0,0,0.68)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Orbitron',monospace", fontSize: '8px', color: p.accent, border: `1px solid ${p.accent}28` }}>
+                      {String(p.id).padStart(2, '0')}
+                    </div>
+                    <img src={p.image} alt={p.title} style={{ width: '100%', height: '270px', objectFit: 'cover', transition: 'transform 0.6s', transform: hoveredProject === p.id ? 'scale(1.06)' : 'scale(1)', display: 'block' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${p.accent}22, transparent)`, opacity: hoveredProject === p.id ? 1 : 0, transition: 'opacity 0.4s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {p.live && (
+                        <a href={p.live} style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(10px)', border: `1px solid ${p.accent}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.accent, boxShadow: `0 0 18px ${p.accent}38` }}>
+                          <ExternalLink size={17} />
+                        </a>
+                      )}
                     </div>
                   </div>
-                  
-                  {/* Floating Particles */}
-                  <div className="skill-particles">
-                    {[...Array(6)].map((_, i) => (
-                      <div 
-                        key={i}
-                        className="skill-particle"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 3}s`,
-                          animationDuration: `${3 + Math.random() * 2}s`
-                        }}
-                      ></div>
+                </div>
+                <div style={{ order: i % 2 === 1 ? 1 : 2 }}>
+                  {p.featured && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '11px' }}>
+                      <Star size={10} style={{ color: p.accent, fill: p.accent }} />
+                      <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '3px', color: p.accent, textShadow: `0 0 8px ${p.accent}` }}>FEATURED PROJECT</span>
+                    </div>
+                  )}
+                  <h3 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 'clamp(16px,2.5vw,24px)', fontWeight: 700, color: '#fff', marginBottom: '16px', transition: 'all 0.3s', transform: hoveredProject === p.id ? 'translateX(8px)' : 'translateX(0)', textShadow: hoveredProject === p.id ? `0 0 18px ${p.accent}38` : 'none' }}>
+                    {p.title}
+                  </h3>
+                  <div style={{ padding: '16px', borderRadius: '5px', marginBottom: '16px', background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                    {hoveredProject === p.id && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px', background: p.accent, boxShadow: `0 0 7px ${p.accent}` }} />}
+                    <p style={{ color: 'rgba(255,255,255,0.58)', lineHeight: 1.85, fontSize: '14px' }}>{p.description}</p>
+                  </div>
+                  <div style={{ marginBottom: '18px' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '3px', color: p.accent, marginBottom: '8px', opacity: 0.85 }}>// TECH STACK</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {p.tech.map(t => <span key={t} className="tech-tag" style={{ background: p.accent + '10', border: `1px solid ${p.accent}25`, color: p.accent }}>{t}</span>)}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                    {[{ href: p.github1, icon: <Github size={12} />, label: 'Frontend' }, ...(p.github2 !== '#' ? [{ href: p.github2, icon: <Github size={12} />, label: 'Backend' }] : []), ...(p.live ? [{ href: p.live, icon: <ExternalLink size={12} />, label: 'Live Demo' }] : [])].map(lk => (
+                      <a key={lk.label} href={lk.href} style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(255, 255, 255, 0.74)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '1px', transition: 'all 0.3s', textDecoration: 'none' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = p.accent; e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.textShadow = `0 0 7px ${p.accent}`; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.74)'; e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.textShadow = 'none'; }}>
+                        {lk.icon} {lk.label} <ArrowRight size={8} />
+                      </a>
                     ))}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          
-          {/* Skills Summary */}
-          <div className="mt-16 text-center opacity-100 animate-fade-in">
-            <div className="glass-card p-8 rounded-lg inline-block">
-              <h3 className="text-2xl font-light text-gradient mb-4">Ready to Build Amazing Things</h3>
-              <p className="text-gray-300 mb-6">
-                With a comprehensive skill set spanning frontend, backend, and deployment technologies,
-                I'm equipped to bring your digital vision to life.
-              </p>
-              <button 
-                onClick={() => scrollToSection('Projects')}
-                className="skill-cta-button"
-              >
-                <span>View My Projects</span>
-                <ArrowRight size={16} className="ml-2" />
+        </div>
+      </section>
+
+      {/* ── EXPERIENCE ── */}
+      <section id="experience" ref={el => sectionsRef.current.experience = el} style={{ padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <div className="section-tag">04. EXPERIENCE</div>
+            <h2 className="section-title" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>Journey</h2>
+          </div>
+          <div style={{ position: 'relative', paddingLeft: '42px' }}>
+            <div style={{ position: 'absolute', left: '13px', top: 0, bottom: 0, width: '1px', background: 'linear-gradient(180deg,#00f5ff,#b347ff 55%,transparent)' }} />
+
+            {/* Freelancer */}
+            <div style={{ position: 'relative', marginBottom: '32px' }}>
+              <div style={{ position: 'absolute', left: '-31px', top: '22px', width: '13px', height: '13px', borderRadius: '50%', background: '#00f5ff', border: '2px solid #000', boxShadow: '0 0 12px #00f5ff, 0 0 24px rgba(0,245,255,0.35)' }} />
+              <div className="glass" style={{ padding: '22px' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(7px)'; e.currentTarget.style.borderColor = 'rgba(0,245,255,0.22)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'rgba(0,245,255,0.1)'; }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '7px', marginBottom: '7px' }}>
+                  <h3 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '14px', fontWeight: 600, color: '#fff' }}>Freelance Developer</h3>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: '#00f5ff', padding: '3px 8px', background: 'rgba(0,245,255,0.07)', borderRadius: '1px', border: '1px solid rgba(0,245,255,0.18)' }}>NOV 2024 – PRESENT</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '9px', color: 'rgba(255,255,255,0.38)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', marginBottom: '12px' }}>
+                  <span>⚡ Independent</span><span>·</span><span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><MapPin size={10} /> Remote</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginBottom: '16px' }}>
+                  {[
+                    'Built & deployed scalable Online Exam Portal — 1000+ users, ₹1,00,000+ revenue, 3700+ submissions',
+                    'Architected high-performance SaaS APIs: Resume ATS Scoring & Document Intelligence systems',
+                    'Implemented JWT auth, Redis caching, WebSockets, CI/CD pipelines, and rate limiting',
+                    'Managed domain configs and cloud deployments with automated pipelines'
+                  ].map((bullet, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '10px', color: 'rgba(255,255,255,0.58)', fontSize: '13px', lineHeight: 1.7 }}>
+                      <span style={{ color: '#00f5ff', flexShrink: 0, marginTop: '3px' }}>›</span>
+                      <span>{bullet}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {["React", "Next.js", "Node.js", "FastAPI", "PostgreSQL", "Redis", "MongoDB", "CI/CD"].map(t => <span key={t} className="tech-tag" style={{ background: 'rgba(0,245,255,0.07)', border: '1px solid rgba(0,245,255,0.18)', color: '#00f5ff' }}>{t}</span>)}
+                </div>
+              </div>
+            </div>
+
+            {/* SDE Intern */}
+            <div style={{ position: 'relative', marginBottom: '32px' }}>
+              <div style={{ position: 'absolute', left: '-31px', top: '22px', width: '13px', height: '13px', borderRadius: '50%', background: '#b347ff', border: '2px solid #000', boxShadow: '0 0 12px #b347ff, 0 0 24px rgba(179,71,255,0.35)' }} />
+              <div className="glass" style={{ padding: '22px', borderColor: 'rgba(179,71,255,0.1)' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(7px)'; e.currentTarget.style.borderColor = 'rgba(179,71,255,0.25)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'rgba(179,71,255,0.1)'; }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '7px', marginBottom: '7px' }}>
+                  <h3 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '14px', fontWeight: 600, color: '#fff' }}>SDE Intern</h3>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: '#b347ff', padding: '3px 8px', background: 'rgba(179,71,255,0.07)', borderRadius: '1px', border: '1px solid rgba(179,71,255,0.18)' }}>APR 2025 – JUN 2025</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '9px', color: 'rgba(255,255,255,0.38)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', marginBottom: '12px' }}>
+                  <span>🔺 Bluestock™</span><span>·</span><span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><MapPin size={10} /> Remote</span>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.58)', lineHeight: 1.82, fontSize: '14px', marginBottom: '16px' }}>
+                  Gained hands-on experience in full stack development and served as Team Lead. Led a passionate team contributing to impactful fintech solutions.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {["React", "Node.js", "Firebase", "MongoDB"].map(t => <span key={t} className="tech-tag" style={{ background: 'rgba(179,71,255,0.07)', border: '1px solid rgba(179,71,255,0.18)', color: '#b347ff' }}>{t}</span>)}
+                </div>
+              </div>
+            </div>
+
+            {/* Education */}
+            <div style={{ position: 'relative', marginBottom: '32px' }}>
+              <div style={{ position: 'absolute', left: '-31px', top: '22px', width: '13px', height: '13px', borderRadius: '50%', background: '#f472b6', border: '2px solid #000', boxShadow: '0 0 12px #f472b6, 0 0 24px rgba(244,114,182,0.35)' }} />
+              <div className="glass" style={{ padding: '22px', borderColor: 'rgba(244,114,182,0.1)' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(7px)'; e.currentTarget.style.borderColor = 'rgba(244,114,182,0.25)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'rgba(244,114,182,0.1)'; }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '7px', marginBottom: '7px' }}>
+                  <h3 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '14px', fontWeight: 600, color: '#fff' }}>B.Tech CSE — Data Science</h3>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: '#f472b6', padding: '3px 8px', background: 'rgba(244,114,182,0.07)', borderRadius: '1px', border: '1px solid rgba(244,114,182,0.18)' }}>2022 – 2026</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '11px', color: 'rgba(255,255,255,0.32)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px' }}>
+                  <Award size={10} style={{ color: '#f472b6' }} /> RVR & JC COLLEGE OF ENGINEERING, GUNTUR
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <p style={{ color: 'rgba(255,255,255,0.58)', lineHeight: 1.82, fontSize: '14px' }}>
+                    Focused on Software Engineering and Web Development. Participated in coding competitions, hackathons, and open source projects.
+                  </p>
+                  <div style={{ padding: '8px 14px', background: 'rgba(244,114,182,0.07)', border: '1px solid rgba(244,114,182,0.2)', borderRadius: '4px', textAlign: 'center', flexShrink: 0 }}>
+                    <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '18px', color: '#f472b6', fontWeight: 700 }}>8.5</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '7px', color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>CGPA</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '48px' }}>
+            <div style={{ display: 'inline-block', padding: '1px', background: 'linear-gradient(135deg,#00f5ff,#b347ff,#f472b6)', borderRadius: '3px' }}>
+              <button onClick={handleResumeDownload} style={{ display: 'flex', alignItems: 'center', gap: '11px', padding: '15px 38px', background: '#030608', border: 'none', borderRadius: '2px', color: '#fff', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '3px', cursor: 'none', transition: 'background 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,245,255,0.05)'}
+                onMouseLeave={e => e.currentTarget.style.background = '#030608'}>
+                <Download size={14} style={{ color: '#00f5ff' }} /> DOWNLOAD FULL RESUME <ArrowRight size={12} style={{ color: '#b347ff' }} />
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section 
-        id="Projects" 
-        ref={(el) => sectionsRef.current.Projects = el}
-        className="min-h-screen px-6 py-20 relative z-10"
-      >
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-light mb-16 text-center opacity-100 animate-fade-in text-gradient">
-            My Projects
-          </h2>
-          
-          <div className="space-y-32">
-            {projects.map((project, index) => (
-              <div key={project.id} className="relative">
-                {/* Project Separator Line */}
-                {index > 0 && (
-                  <div className="absolute -top-16 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent">
-                    <div className="absolute left-1/2 -top-2 transform -translate-x-1/2 w-4 h-4 bg-cyan-400 rounded-full animate-pulse"></div>
-                  </div>
-                )}
-                
-                <div className="grid md:grid-cols-2 gap-12 items-center opacity-100 animate-fade-in project-container">
-                  {/* Project Image */}
-                  <div className={`${index % 2 === 1 ? 'md:order-2' : ''}`}>
-                    <div className="relative group overflow-hidden rounded-lg glass-card project-image-container">
-                      {/* Project Category Badge */}
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className="px-3 py-1 bg-gradient-to-r from-cyan-400/80 to-purple-400/80 text-white text-xs font-medium rounded-full backdrop-blur-sm">
-                          {project.category}
-                        </span>
-                      </div>
-                      
-                      {/* Project Number */}
-                      <div className="absolute top-4 right-4 z-10">
-                        <div className="w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-cyan-400 font-bold text-sm">
-                          {String(project.id).padStart(2, '0')}
-                        </div>
-                      </div>
-                      
-                      <img 
-                        src={project.image} 
-                        alt={project.title}
-                        className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
-                        {project.live && (
-                          <a 
-                            href={project.live}
-                            className="project-btn"
-                            aria-label="View Live Demo"
-                          >
-                            <ExternalLink size={20} />
-                          </a>
-                        )}
-                      </div>
-                      
-                      {/* Project Glow Effect */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500">
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 blur-xl"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Project Details */}
-                  <div className={`${index % 2 === 1 ? 'md:order-1' : ''} project-details`}>
-                    <div className="space-y-6">
-                      {/* Featured Badge */}
-                      {project.featured && (
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                          <span className="text-xs tracking-widest uppercase text-cyan-400 glow-pulse">Featured Project</span>
-                        </div>
-                      )}
-                      
-                      {/* Project Title */}
-                      <h3 className="text-2xl md:text-3xl font-light text-gradient project-title">
-                        {project.title}
-                      </h3>
-                      
-                      {/* Project Description */}
-                      <div className="glass-card p-6 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10">
-                        <p className="text-gray-200 leading-relaxed">
-                          {project.description}
-                        </p>
-                      </div>
-                      
-                      {/* Technologies Used */}
-                      <div className="space-y-3">
-                        <h4 className="text-sm tracking-widest uppercase text-cyan-400">Technologies Used</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tech.map((tech, techIndex) => (
-                            <span 
-                              key={tech}
-                              className="tech-tag hover:scale-105 transition-transform duration-200"
-                              style={{ animationDelay: `${techIndex * 0.1}s` }}
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {/* Project Links */}
-                      <div className="flex space-x-6 pt-4">
-
-                        <a 
-                          href={project.github1}
-                          className="project-link group"
-                          aria-label="View source code"
-                        >
-                          <Github size={16} />
-                          <span className="text-sm">Frontend  Code</span>
-                          <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
-                        </a>
-                        <a 
-                          href={project.github2}
-                          className="project-link group"
-                          aria-label="View source code"
-                        >
-                          <Github size={16} />
-                          <span className="text-sm">Backend Code</span>
-                          <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
-                        </a>
-                        {project.live && (
-                          <a 
-                            href={project.live}
-                            className="project-link group"
-                            aria-label="View live demo"
-                          >
-                            <ExternalLink size={16} />
-                            <span className="text-sm">Live Demo</span>
-                            <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Project Background Decoration */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-400/5 via-transparent to-purple-400/5 rounded-3xl -z-10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              </div>
-            ))}
+      {/* ── ACHIEVEMENTS ── */}
+      <section id="achievements" ref={el => sectionsRef.current.achievements = el} style={{ padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <div className="section-tag">05. ACHIEVEMENTS</div>
+            <h2 className="section-title" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>Milestones</h2>
+            <p style={{ color: 'rgba(255,255,255,0.3)', marginTop: '10px', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '3px' }}>
+              // BATTLE LOG LOADED
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Experience Section */}
-      <section 
-        id="experience" 
-        ref={(el) => sectionsRef.current.experience = el}
-        className="min-h-screen px-6 py-20 relative z-10"
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-light mb-16 text-center opacity-100 animate-fade-in text-gradient">
-            Experience
-          </h2>
-          
-          <div className="space-y-12">
-            {experience.map((job, index) => (
-              <div 
-                key={job.company}
-                className="border-l-2 border-cyan-500/50 pl-8 pb-12 opacity-100 animate-fade-in"
-              >
-                <div className="relative -ml-10 mb-4">
-                  <div className="w-4 h-4 bg-cyan-400 rounded-full glow-pulse"></div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '20px' }} className="achieve-grid">
+            {[
+              {
+                icon: '🏆',
+                rank: '2nd Place',
+                title: 'RUPAJNA 2025',
+                org: 'ITBI Center · RJE-NEST · RVRJC College',
+                description: 'Led development team and built an innovative platform designed to empower communities by addressing pressing social and environmental challenges.',
+                tech: ['React', 'Express', 'MongoDB'],
+                accent: '#fbbf24',
+                glow: 'rgba(251,191,36,0.3)'
+              },
+              {
+                icon: '🚀',
+                rank: 'Participant',
+                title: 'Smart India Hackathon 2025',
+                org: 'ISRO · Problem Statement 25177',
+                description: "Developed 'SafeMarg' — a mobile-based navigation app designed to help prevent road accidents through intelligent route guidance and real-time safety alerts.",
+                tech: ['React Native', 'Node.js', 'Maps API'],
+                accent: '#00f5ff',
+                glow: 'rgba(0,245,255,0.3)'
+              },
+              {
+                icon: '💡',
+                rank: 'Team Lead',
+                title: 'VJ Hackathon 2025',
+                org: 'VNRVJIET · Hyderabad',
+                description: "Built 'JeevanPath' — a mobile app solving healthcare accessibility using voice recognition and intelligent route mapping to help users find nearby health resources.",
+                tech: ['React Native', 'Voice Recognition', 'Maps'],
+                accent: '#b347ff',
+                glow: 'rgba(179,71,255,0.3)'
+              }
+            ].map((a, i) => (
+              <div key={i} className="achievement-card"
+                onMouseEnter={e => { e.currentTarget.style.borderColor = a.accent + '30'; e.currentTarget.style.boxShadow = `0 18px 52px ${a.glow},inset 0 1px 0 ${a.accent}12`; e.currentTarget.style.transform = 'translateY(-5px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                {/* Top accent bar */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg,transparent,${a.accent},transparent)`, opacity: 0.7 }} />
+
+                {/* Icon + rank badge */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div style={{ fontSize: '36px', animation: i === 0 ? 'trophy-float 3s ease-in-out infinite' : 'none' }}>{a.icon}</div>
+                  <div style={{ padding: '4px 10px', background: a.accent + '18', border: `1px solid ${a.accent}38`, borderRadius: '2px', fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: a.accent }}>
+                    {a.rank.toUpperCase()}
+                  </div>
                 </div>
-                
-                <div className="space-y-3 glass-card p-6 rounded-lg">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <h3 className="text-xl font-medium text-gradient">{job.role}</h3>
-                    <span className="text-sm text-cyan-400 tracking-widest">{job.period}</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4 text-gray-300">
-                    <span>{job.company}</span>
-                    <span>•</span>
-                    <div className="flex items-center space-x-1">
-                      <MapPin size={14} />
-                      <span className="text-sm">{job.location}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-200 leading-relaxed">
-                    {job.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {job.technologies.map((tech) => (
-                      <span 
-                        key={tech}
-                        className="tech-tag-small"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+
+                <h3 style={{ fontFamily: "'Orbitron',sans-serif", fontSize: '14px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>{a.title}</h3>
+                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '1px', color: 'rgba(255,255,255,0.3)', marginBottom: '14px' }}>{a.org}</div>
+
+                <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, fontSize: '13px', marginBottom: '16px' }}>{a.description}</p>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {a.tech.map(t => <span key={t} className="tech-tag" style={{ background: a.accent + '0e', border: `1px solid ${a.accent}22`, color: a.accent, fontSize: '9px' }}>{t}</span>)}
                 </div>
               </div>
             ))}
           </div>
-          
-          {/* Education */}
-          <div className="mt-16 border-l-2 border-cyan-500/50 pl-8 opacity-100 animate-fade-in">
-            <div className="relative -ml-10 mb-4">
-              <div className="w-4 h-4 bg-cyan-400 rounded-full glow-pulse"></div>
-            </div>
-            
-            <div className="space-y-3 glass-card p-6 rounded-lg">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <h3 className="text-xl font-medium text-gradient">B.Tech Data Science</h3>
-                <span className="text-sm text-cyan-400 tracking-widest">2022 - 2026</span>
-              </div>
-              
-              <p className="text-gray-200 leading-relaxed">
-                Focused on Software Engineering and Web Development. Participated in various coding competitions and open source projects.
-              </p>
+
+          {/* Impact stats bar */}
+          <div style={{ marginTop: '48px', padding: '28px', background: 'rgba(0,245,255,0.015)', border: '1px solid rgba(0,245,255,0.08)', borderRadius: '8px' }}>
+            <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '4px', color: 'rgba(0,245,255,0.5)', textAlign: 'center', marginBottom: '24px' }}>// IMPACT METRICS</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '20px', textAlign: 'center' }}>
+              {[
+                { val: '1000+', label: 'Concurrent Users', c: '#00f5ff' },
+                { val: '₹1L+', label: 'Revenue Generated', c: '#fbbf24' },
+                { val: '3700+', label: 'Test Submissions', c: '#b347ff' },
+                { val: 'Multple', label: 'Real world projects', c: '#f472b6' }
+              ].map(m => (
+                <div key={m.label}>
+                  <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 'clamp(20px,3vw,32px)', fontWeight: 700, color: m.c, textShadow: `0 0 16px ${m.c}55`, marginBottom: '6px' }}>{m.val}</div>
+                  <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: 'rgba(255,255,255,0.3)' }}>{m.label.toUpperCase()}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section 
-        id="contact" 
-        ref={(el) => sectionsRef.current.contact = el}
-        className="min-h-screen flex items-center px-6 py-20 relative z-10"
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-8 opacity-100 animate-fade-in text-gradient">
-            Let's Work Together
+      {/* ── CONTACT ── */}
+      <section id="contact" ref={el => sectionsRef.current.contact = el} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '100px 22px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '740px', margin: '0 auto', textAlign: 'center', width: '100%' }}>
+          <div className="section-tag">06. CONTACT</div>
+          <h2 className="section-title" style={{ fontSize: 'clamp(30px,6vw,62px)', lineHeight: 1.05, marginBottom: '18px', filter: 'drop-shadow(0 0 18px rgba(0,245,255,0.18))' }}>
+            Let's Build<br />Together
           </h2>
-          
-          <p className="text-lg text-gray-200 mb-12 opacity-100 animate-fade-in">
-            I'm always interested in hearing about new opportunities and exciting projects.
+          <p style={{ color: 'rgba(255,255,255,0.35)', lineHeight: 1.9, marginBottom: '50px', fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', letterSpacing: '1px' }}>
+            &gt; READY TO COLLABORATE ON SOMETHING GREAT?<br />&gt; TRANSMIT YOUR MESSAGE.
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 mb-12 opacity-100 animate-fade-in">
-            <a 
-              href="mailto:prasannasimha5002@gmail.com"
-              className="contact-link"
-            >
-              <Mail size={20} />
-              <span>prasannasimha5002@gmail.com</span>
-              <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-            
-            <a 
-              href="tel:+918309179509"
-              className="contact-link"
-            >
-              <Phone size={20} />
-              <span>+91 8309179509</span>
-              <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
+
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '40px' }}>
+            {[{ icon: <Mail size={15} />, label: 'EMAIL', value: 'prasannasimha5002@gmail.com', href: 'mailto:prasannasimha5002@gmail.com', c: '#00f5ff' }, { icon: <Phone size={15} />, label: 'PHONE', value: '+91 8309179509', href: 'tel:+918309179509', c: '#b347ff' }].map(ct => (
+              <a key={ct.label} href={ct.href} className="glass" style={{ display: 'flex', alignItems: 'center', gap: '13px', padding: '15px 20px', textDecoration: 'none', color: 'rgba(255,255,255,0.62)', borderColor: ct.c + '15' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = ct.c + '38'; e.currentTarget.style.background = ct.c + '05'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = `0 12px 38px ${ct.c}10`; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = ct.c + '15'; e.currentTarget.style.background = 'rgba(0,245,255,0.018)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'rgba(255,255,255,0.62)'; }}>
+                <span style={{ color: ct.c, filter: `drop-shadow(0 0 5px ${ct.c})` }}>{ct.icon}</span>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '7px', letterSpacing: '3px', color: ct.c, marginBottom: '3px' }}>{ct.label}</div>
+                  <div style={{ fontSize: '13px' }}>{ct.value}</div>
+                </div>
+              </a>
+            ))}
           </div>
-          
-          <div className="flex items-center justify-center space-x-6 mb-12 opacity-100 animate-fade-in">
-            <a href="https://github.com/spk-2005" className="social-icon">
-              <Github size={24} />
-            </a>
-            <a href="https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/" className="social-icon">
-              <Linkedin size={24} />
-            </a>
-            <a href="mailto:prasannasimha5002@gmail.com" className="social-icon">
-              <Mail size={24} />
-            </a>
+
+          <div style={{ display: 'flex', gap: '11px', justifyContent: 'center', marginBottom: '48px' }}>
+            {[{ href: "https://github.com/spk-2005", icon: <Github size={18} />, c: '#00f5ff' }, { href: "https://www.linkedin.com/in/prasanna-kumar-simhadri-32aa80290/", icon: <Linkedin size={18} />, c: '#b347ff' }, { href: "mailto:prasannasimha5002@gmail.com", icon: <Mail size={18} />, c: '#f472b6' }].map((s, i) => (
+              <a key={i} href={s.href} className="social-icon"
+                onMouseEnter={e => { e.currentTarget.style.color = s.c; e.currentTarget.style.borderColor = s.c + '45'; e.currentTarget.style.background = s.c + '0e'; e.currentTarget.style.boxShadow = `0 0 16px ${s.c}28`; e.currentTarget.style.transform = 'translateY(-4px) rotate(5deg)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.025)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0) rotate(0deg)'; }}>
+                {s.icon}
+              </a>
+            ))}
           </div>
-          
-          <div className="text-gray-400 text-sm opacity-100 animate-fade-in">
-            Made with <Heart size={14} className="inline mx-1 text-red-500 animate-pulse" /> in the Galaxy
+
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '3px', color: 'rgba(255,255,255,0.18)' }}>
+            MADE WITH <Heart size={10} style={{ display: 'inline', color: '#f472b6', verticalAlign: 'middle', filter: 'drop-shadow(0 0 4px #f472b6)', animation: 'pulse-d 1.5s ease-in-out infinite' }} /> IN THE GALAXY
           </div>
         </div>
       </section>
-
-      {/* Custom Styles */}
-      <style jsx>{`
-        .galaxy-container {
-          background: radial-gradient(ellipse at top, #06060a 0%, #000000 50%, #0a0d0f 100%);
-          position: relative;
-        }
-
-        .custom-cursor {
-          width: 30px;
-          height: 30px;
-          transition: transform 0.1s ease;
-        }
-
-        .cursor-inner {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .cursor-inner::before {
-          content: '';
-          position: absolute;
-          width: 16px;
-          height: 16px;
-          background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
-          border-radius: 50%;
-          animation: cursor-pulse 2s ease-in-out infinite;
-        }
-
-        .cursor-inner::after {
-          content: '';
-          position: absolute;
-          width: 30px;
-          height: 30px;
-          border: 2px solid rgba(96, 165, 250, 0.3);
-          border-radius: 50%;
-          animation: cursor-rotate 3s linear infinite;
-        }
-
-        .cursor-glow {
-          position: absolute;
-          width: 40px;
-          height: 40px;
-          background: radial-gradient(circle, rgba(96, 165, 250, 0.2) 0%, transparent 70%);
-          border-radius: 50%;
-          animation: cursor-glow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes cursor-pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(0.8); opacity: 0.7; }
-        }
-
-        @keyframes cursor-rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        @keyframes cursor-glow {
-          0% { transform: scale(1); opacity: 0.3; }
-          100% { transform: scale(1.2); opacity: 0.1; }
-        }
-
-        .galaxy-ripple {
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(96, 165, 250, 0.4) 0%, transparent 70%);
-          transform: translate(-50%, -50%);
-          animation: ripple 1s ease-out;
-          pointer-events: none;
-        }
-
-        @keyframes ripple {
-          0% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(4);
-            opacity: 0;
-          }
-        }
-
-        .text-gradient {
-          background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .text-glow {
-          filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.5));
-        }
-
-        .glow-pulse {
-          animation: glow-pulse 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow-pulse {
-          0% { 
-            filter: drop-shadow(0 0 5px currentColor); 
-            opacity: 1; 
-          }
-          100% { 
-            filter: drop-shadow(0 0 20px currentColor); 
-            opacity: 0.8; 
-          }
-        }
-
-        .glass-card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(96, 165, 250, 0.3);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(96, 165, 250, 0.1);
-        }
-
-        .social-link {
-          color: #9ca3af;
-          transition: all 0.3s ease;
-          padding: 12px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .social-link:hover {
-          color: #60a5fa;
-          background: rgba(96, 165, 250, 0.1);
-          border-color: rgba(96, 165, 250, 0.3);
-          transform: translateY(-2px) scale(1.1);
-          box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-        }
-
-        .social-icon {
-          padding: 16px;
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          color: #9ca3af;
-          transition: all 0.3s ease;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-        }
-
-        .social-icon:hover {
-          color: #60a5fa;
-          border-color: rgba(96, 165, 250, 0.5);
-          background: rgba(96, 165, 250, 0.1);
-          transform: translateY(-3px) rotate(5deg);
-          box-shadow: 0 10px 25px rgba(96, 165, 250, 0.2);
-        }
-
-        .project-btn {
-          padding: 12px;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          border-radius: 50%;
-          color: white;
-          transition: all 0.3s ease;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .project-btn:hover {
-          background: rgba(96, 165, 250, 0.2);
-          border-color: rgba(96, 165, 250, 0.5);
-          transform: scale(1.1);
-          box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
-        }
-
-        .project-link {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: #9ca3af;
-          transition: all 0.3s ease;
-          padding: 8px 0;
-        }
-
-        .project-link:hover {
-          color: #60a5fa;
-          transform: translateX(5px);
-        }
-
-        .contact-link {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          color: #d1d5db;
-          transition: all 0.3s ease;
-          padding: 16px 24px;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          group: true;
-        }
-
-        .contact-link:hover {
-          color: #60a5fa;
-          background: rgba(96, 165, 250, 0.1);
-          border-color: rgba(96, 165, 250, 0.3);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(96, 165, 250, 0.15);
-        }
-
-        .tech-tag {
-          padding: 6px 12px;
-          background: rgba(96, 165, 250, 0.1);
-          color: #60a5fa;
-          font-size: 0.875rem;
-          border-radius: 20px;
-          border: 1px solid rgba(96, 165, 250, 0.2);
-          transition: all 0.3s ease;
-          backdrop-filter: blur(5px);
-        }
-
-        .tech-tag:hover {
-          background: rgba(96, 165, 250, 0.2);
-          border-color: rgba(96, 165, 250, 0.4);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(96, 165, 250, 0.2);
-        }
-
-        .tech-tag-small {
-          padding: 4px 8px;
-          background: rgba(167, 139, 246, 0.1);
-          color: #a78bfa;
-          font-size: 0.75rem;
-          border-radius: 12px;
-          border: 1px solid rgba(167, 139, 246, 0.2);
-        }
-
-        /* Skills Section Enhancements */
-        .skill-card {
-          transition: all 0.5s ease;
-        }
-
-        .skill-card:hover {
-          transform: translateY(-8px) scale(1.02);
-        }
-
-        .racing-border {
-          position: absolute;
-          inset: -1px;
-          padding: 1px;
-          background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6, #60a5fa);
-          background-size: 400% 400%;
-          border-radius: 0.5rem;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          animation: racing-border 3s ease infinite;
-        }
-
-        .skill-card:hover .racing-border {
-          opacity: 1;
-        }
-
-        @keyframes racing-border {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        .racing-progress {
-          width: 0%;
-          animation: racing-progress 2s ease-out forwards;
-        }
-
-        @keyframes racing-progress {
-          to { width: 85%; }
-        }
-
-        .skill-icon {
-          color: #60a5fa;
-          transition: all 0.3s ease;
-        }
-
-        .skill-item:hover .skill-icon {
-          color: #ffffff;
-          transform: scale(1.1);
-        }
-
-        .skill-particles {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .skill-card:hover .skill-particles {
-          opacity: 1;
-        }
-
-        .skill-particle {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: radial-gradient(circle, #60a5fa, transparent);
-          border-radius: 50%;
-          animation: skill-particle-float linear infinite;
-        }
-
-        @keyframes skill-particle-float {
-          0% {
-            transform: translateY(100%) scale(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-            transform: scale(1);
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100%) scale(0);
-            opacity: 0;
-          }
-        }
-
-        .skill-cta-button {
-          display: inline-flex;
-          align-items: center;
-          padding: 12px 24px;
-          background: linear-gradient(45deg, #60a5fa, #a78bfa);
-          color: white;
-          border: none;
-          border-radius: 30px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          text-decoration: none;
-        }
-
-        .skill-cta-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(96, 165, 250, 0.4);
-          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-        }
-
-        /* Project Section Enhancements */
-        .project-container {
-          position: relative;
-          transition: all 0.5s ease;
-        }
-
-        .project-container:hover {
-          transform: translateY(-5px);
-        }
-
-        .project-image-container {
-          position: relative;
-          overflow: hidden;
-          border-radius: 12px;
-        }
-
-        .project-image-container::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
-          border-radius: 14px;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          z-index: -1;
-        }
-
-        .project-container:hover .project-image-container::before {
-          opacity: 0.3;
-        }
-
-        .project-title {
-          transition: all 0.3s ease;
-        }
-
-        .project-container:hover .project-title {
-          transform: translateX(10px);
-        }
-
-        .project-details {
-          position: relative;
-        }
-
-        .project-details::before {
-          content: '';
-          position: absolute;
-          left: -20px;
-          top: 0;
-          bottom: 0;
-          width: 2px;
-          background: linear-gradient(to bottom, transparent, #60a5fa, transparent);
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .project-container:hover .project-details::before {
-          opacity: 1;
-        }
-
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 1s ease-out forwards;
-        }
-
-        .animate-fade-in {
-          animation: fade-in 1s ease-out forwards;
-        }
-
-        .animate-spin-slow {
-          animation: spin 3s linear infinite;
-        }
-
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        /* Ensure text is visible by default */
-        h1, h2, h3, p, div {
-          opacity: 1;
-        }
-
-        /* Smooth scrolling */
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.3);
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background: linear-gradient(45deg, #60a5fa, #a78bfa);
-          border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-        }
-
-        /* Disable default cursor */
-        * {
-          cursor: none !important;
-        }
-
-        .star {
-          animation: twinkle 3s ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-
-        .floating {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-
-        .breathing {
-          animation: breathing 4s ease-in-out infinite;
-        }
-
-        @keyframes breathing {
-          0%, 100% { 
-            filter: drop-shadow(0 0 5px currentColor);
-            transform: scale(1); 
-          }
-          50% { 
-            filter: drop-shadow(0 0 25px currentColor);
-            transform: scale(1.02); 
-          }
-        }
-
-        .interactive:hover {
-          animation: interactive-glow 0.3s ease-in-out;
-        }
-
-        @keyframes interactive-glow {
-          0% { box-shadow: 0 0 5px rgba(96, 165, 250, 0.3); }
-          100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.6); }
-        }
-      `}</style>
     </div>
   );
 };
