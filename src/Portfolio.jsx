@@ -39,6 +39,7 @@ const PROFILE = {
   phone: "+91 8309179509",
   github: "https://github.com/spk-2005",
   linkedin: "https://linkedin.com/in/prasanna-kumar-simhadri",
+  medium: "https://medium.com/@prasannasimha5002",
   tags: ["Backend Engineer", "Distributed Systems", "Full-Stack"],
   aboutIntro:
     "I build backend systems and data-intensive applications with a focus on scalability, performance, and reliability. My experience spans Java, Spring Boot, Python, FastAPI, SQL, and distributed data systems such as ClickHouse, with hands-on experience optimizing production workloads and building APIs from the ground up.",
@@ -162,6 +163,8 @@ const PROJECTS = [
     color: C.green,
     desc: "Secure, scalable full-stack examination platform supporting 1,000+ concurrent users, with JWT auth, automated CI/CD test pipelines, and a React admin dashboard.",
     stack: ["Node.js", "React", "TypeScript", "MongoDB"],
+    github: "https://github.com/spk-2005/online-exam-departmental-test",
+    live: "https://departmental-tests.netlify.app/",
   },
   {
     name: "JD-Aware ATS Resume Analyzer",
@@ -169,6 +172,7 @@ const PROJECTS = [
     color: C.purple,
     desc: "Production-grade ATS analyzer using BM25+, TF-IDF, and NLP for semantic resume-to-job matching, built on a modular, scalable backend.",
     stack: ["FastAPI", "Python", "PostgreSQL", "NLP"],
+    github: "https://github.com/spk-2005/resume-api",
   },
   {
     name: "RVRBot — College Chatbot",
@@ -176,6 +180,7 @@ const PROJECTS = [
     color: C.cyan,
     desc: "NLP-powered chatbot using TF-IDF semantic search, intent detection, and Levenshtein-based spell correction for context-aware college queries.",
     stack: ["React.js", "Node.js", "Express.js", "NLP"],
+    github: "https://github.com/spk-2005/chatbot",
   },
   {
     name: "Machine Unlearning: Ethical Forgetting",
@@ -191,6 +196,20 @@ const ACHIEVEMENTS = [
   { color: C.green, title: "Team Lead — Smart India Hackathon 2025 (ISRO)", note: "Led a cross-functional team building a data-rich web app with React and Python under deadline pressure." },
   { color: C.cyan, title: "Team Lead — VJ Hackathon 2025 (VNRVJIET)", note: "Directed a team through a full build cycle from idea to demo in a time-boxed sprint." },
   { color: C.orange, title: "Certifications", note: "NPTEL (IIT Madras) — Joy of Computing Using Python; AICTE Virtual Internships in Web Development & Data Analytics." },
+];
+
+const BLOGS = [
+  {
+    title: "Why Semantic Search Isn’t Enough When AI Agents Can Take Actions",
+    subtitle: "The problem isn’t retrieval. It’s verifiability.",
+    desc: "Why standard RAG and vector similarity break down when autonomous agents transition from answering questions to executing irreversible actions — and why verifiable context engineering is the missing layer in agentic architectures.",
+    date: "Oct 2026",
+    readTime: "6 min read",
+    platform: "Medium",
+    color: C.cyan,
+    tags: ["Agentic AI", "Context Engineering", "RAG", "System Design"],
+    url: "https://medium.com/@prasannasimha5002/why-semantic-search-isnt-enough-when-ai-agents-can-take-actions-8d1219c7bb38",
+  },
 ];
 
 /* ────────────────────────────────────────────────────────────
@@ -226,10 +245,50 @@ function Pill({ children, bg = "#fff", border = C.ink, color = C.ink }) {
         background: bg,
         color,
         border: `2px solid ${border}`,
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        wordBreak: "break-word",
       }}
     >
       {children}
     </span>
+  );
+}
+
+function ExternalLinkIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="ext-link-icon"
+    >
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
+}
+
+function GithubIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </svg>
   );
 }
 
@@ -323,7 +382,7 @@ function HomeArt() {
    Sections
    ──────────────────────────────────────────────────────────── */
 function Nav({ active }) {
-  const items = ["About", "Skills", "Experience", "Projects", "Contact"];
+  const items = ["About", "Skills", "Experience", "Projects", "Blogs", "Contact"];
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleClick = (e, id) => {
@@ -705,9 +764,64 @@ function Projects() {
                   </span>
                 </div>
                 <div style={{ padding: 22 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 19, color: C.ink }}>{p.name}</div>
-
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 19, color: C.ink, lineHeight: 1.3 }}>{p.name}</div>
+                    {(p.github || p.live) && (
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+                        {p.github && (
+                          <a
+                            href={p.github}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="View GitHub Repository"
+                            aria-label={`${p.name} GitHub Repository`}
+                            className="project-link-btn"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 34,
+                              height: 34,
+                              borderRadius: 8,
+                              border: `2px solid ${C.ink}`,
+                              background: "#fff",
+                              color: C.ink,
+                              boxShadow: `2px 2px 0px ${C.ink}`,
+                              textDecoration: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <GithubIcon size={17} />
+                          </a>
+                        )}
+                        {p.live && (
+                          <a
+                            href={p.live}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="Open Live Website"
+                            aria-label={`${p.name} Live Website`}
+                            className="project-link-btn live-btn"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 34,
+                              height: 34,
+                              borderRadius: 8,
+                              border: `2px solid ${C.ink}`,
+                              background: C.yellow,
+                              color: C.ink,
+                              boxShadow: `2px 2px 0px ${C.ink}`,
+                              textDecoration: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <ExternalLinkIcon size={17} />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <p style={{ fontFamily: FONTS.body, fontSize: 14, color: C.inkSoft, lineHeight: 1.6, margin: "10px 0 14px" }}>{p.desc}</p>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -748,6 +862,130 @@ function Achievements() {
   );
 }
 
+function Blogs() {
+  return (
+    <section id="blogs" style={styles.section}>
+      <div style={styles.wrap}>
+        <Reveal>
+          <Eyebrow>Writing & Thoughts</Eyebrow>
+          <SectionTitle>Blogs</SectionTitle>
+          <p style={{ ...styles.body, maxWidth: 700, marginBottom: 30 }}>
+            Technical deep dives and insights into AI agents, distributed systems, and backend engineering architectures.
+          </p>
+        </Reveal>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: BLOGS.length === 1 ? "1fr" : "repeat(2, 1fr)",
+            gap: 24,
+          }}
+          className="blog-grid"
+        >
+          {BLOGS.map((b, i) => (
+            <Reveal key={b.url} delay={i * 70}>
+              <BrutalCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", height: "100%" }} className="blog-card">
+                <div style={{ height: 12, background: b.color || C.cyan, borderBottom: `2.5px solid ${C.ink}` }} />
+                <div style={{ padding: "26px 28px", display: "flex", flexDirection: "column", flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <Pill bg={b.color || C.cyan} border={C.ink} color={C.ink}>{b.platform}</Pill>
+                      <span style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 13, color: C.inkSoft }}>
+                        {b.date} • {b.readTime}
+                      </span>
+                    </div>
+                    <a
+                      href={b.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Read on Medium"
+                      aria-label={`Read ${b.title} on Medium`}
+                      className="project-link-btn live-btn"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 34,
+                        height: 34,
+                        borderRadius: 8,
+                        border: `2px solid ${C.ink}`,
+                        background: C.yellow,
+                        color: C.ink,
+                        boxShadow: `2px 2px 0px ${C.ink}`,
+                        textDecoration: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <ExternalLinkIcon size={17} />
+                    </a>
+                  </div>
+
+                  <a
+                    href={b.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <h3
+                      className="blog-title"
+                      style={{
+                        fontFamily: FONTS.display,
+                        fontWeight: 700,
+                        fontSize: "clamp(1.3rem, 2.6vw, 1.65rem)",
+                        color: C.ink,
+                        margin: "0 0 8px",
+                        lineHeight: 1.25,
+                      }}
+                    >
+                      {b.title}
+                    </h3>
+                  </a>
+
+                  {b.subtitle && (
+                    <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 15, color: C.blue, marginBottom: 12 }}>
+                      {b.subtitle}
+                    </div>
+                  )}
+
+                  <p style={{ fontFamily: FONTS.body, fontSize: 14.5, color: C.inkSoft, lineHeight: 1.65, margin: "0 0 20px", flex: 1 }}>
+                    {b.desc}
+                  </p>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginTop: "auto", paddingTop: 16, borderTop: `1.5px dashed ${C.grid}` }}>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {b.tags.map((t) => (
+                        <Pill key={t} bg="#fff">{t}</Pill>
+                      ))}
+                    </div>
+                    <a
+                      href={b.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontFamily: FONTS.body,
+                        fontWeight: 700,
+                        fontSize: 14,
+                        color: C.ink,
+                        textDecoration: "none",
+                      }}
+                      className="read-article-link"
+                    >
+                      <span>Read Article</span>
+                      <ExternalLinkIcon size={14} />
+                    </a>
+                  </div>
+                </div>
+              </BrutalCard>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Contact() {
   return (
     <section id="contact" style={{ ...styles.section, paddingBottom: 90 }}>
@@ -770,6 +1008,9 @@ function Contact() {
               </a>
               <a href={PROFILE.github} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>GITHUB</Pill>
+              </a>
+              <a href={PROFILE.medium} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                <Pill bg={C.yellow}>MEDIUM</Pill>
               </a>
               <a href={`mailto:${PROFILE.email}`} style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>EMAIL</Pill>
@@ -808,9 +1049,10 @@ const styles = {
    ──────────────────────────────────────────────────────────── */
 export default function Portfolio() {
   const [active, setActive] = useState("About");
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
-    const ids = ["about", "skills", "experience", "projects", "contact"];
+    const ids = ["about", "skills", "experience", "projects", "blogs", "contact"];
     const onScroll = () => {
       let current = "About";
       for (const id of ids) {
@@ -820,10 +1062,15 @@ export default function Portfolio() {
         }
       }
       setActive(current);
+      setShowBackToTop(window.pageYOffset > 360);
     };
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div
@@ -839,20 +1086,45 @@ export default function Portfolio() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { margin: 0; }
+        html {
+          scroll-behavior: smooth;
+          scroll-padding-top: 80px;
+          -webkit-text-size-adjust: 100%;
+        }
+        body {
+          margin: 0;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
         img, svg { max-width: 100%; height: auto; }
+
+        h1, h2, h3, h4, p, span, a {
+          overflow-wrap: break-word;
+          word-break: break-word;
+        }
+
+        a, button {
+          -webkit-tap-highlight-color: transparent;
+        }
 
         .nav-link { transition: color 0.2s ease; }
         .nav-link:hover { color: ${C.blue} !important; }
 
         .brutal-card { transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1); }
         .project-card:hover,
+        .blog-card:hover,
         .skills-grid > div > .brutal-card:hover,
         .achieve-grid > div > .brutal-card:hover {
           transform: translate(-3px, -3px);
           box-shadow: 9px 9px 0px ${C.ink} !important;
         }
+
+        .blog-title { transition: color 0.18s ease; }
+        .blog-card:hover .blog-title { color: ${C.blue}; }
+        .read-article-link { transition: color 0.15s ease, transform 0.15s ease; }
+        .read-article-link:hover { color: ${C.blue}; transform: translateX(2px); }
+        .blog-card:hover .ext-link-icon { transform: translate(2px, -2px); }
 
         .skill-chip { transition: transform 0.15s ease, background 0.15s ease; display: inline-block; }
         .skill-chip:hover { transform: translateY(-2px); background: ${C.ink}; color: #fff; }
@@ -869,6 +1141,16 @@ export default function Portfolio() {
 
         .ext-link-icon { transition: transform 0.2s ease; }
         .project-card:hover .ext-link-icon { transform: translate(2px, -2px); }
+        .project-link-btn {
+          transition: transform 0.15s cubic-bezier(0.22,1,0.36,1), box-shadow 0.15s cubic-bezier(0.22,1,0.36,1), background 0.15s ease;
+        }
+        .project-link-btn:hover {
+          transform: translate(-2px, -2px) !important;
+          box-shadow: 4px 4px 0px ${C.ink} !important;
+        }
+        .project-link-btn.live-btn:hover {
+          background: ${C.yellowDeep} !important;
+        }
 
         /* Mobile nav dropdown hidden by default; toggled inline by React state */
         .nav-mobile-menu { display: none; }
@@ -879,12 +1161,24 @@ export default function Portfolio() {
           * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
         }
 
+        /* ── Touch devices (disable desktop hover transforms on tap) ── */
+        @media (hover: none) {
+          .project-card:hover,
+          .blog-card:hover,
+          .skills-grid > div > .brutal-card:hover,
+          .achieve-grid > div > .brutal-card:hover {
+            transform: none !important;
+            box-shadow: 4px 4px 0px ${C.ink} !important;
+          }
+        }
+
         /* ── Tablet & small desktop ── */
         @media (max-width: 860px) {
           .hero-grid { grid-template-columns: 1fr !important; }
           .hero-grid > div:last-child { order: -1; }
           .skills-grid { grid-template-columns: 1fr 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
+          .blog-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
           .contact-grid > div:last-child { display: none; }
@@ -902,20 +1196,44 @@ export default function Portfolio() {
         /* ── Phones ── */
         @media (max-width: 640px) {
           .nav-inner { padding: 14px 16px !important; }
-          .hero-section { padding: 48px 0 40px !important; }
-          section { padding: 44px 0 !important; }
+          .hero-section { padding: 40px 0 32px !important; }
+          section { padding: 40px 0 !important; }
           .skills-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
-          .timeline { padding-left: 52px !important; }
-          .timeline-rail { left: 12px !important; }
-          .timeline-dot { left: -38px !important; width: 30px !important; height: 30px !important; font-size: 12px !important; top: 14px !important; }
-          .timeline-card { padding: 18px 16px !important; }
-          .contact-card { padding: 22px !important; }
+          .blog-grid { grid-template-columns: 1fr !important; }
+          .timeline { padding-left: 50px !important; }
+          .timeline-rail { left: 10px !important; }
+          .timeline-dot { left: -36px !important; width: 28px !important; height: 28px !important; font-size: 11px !important; top: 14px !important; }
+          .timeline-card { padding: 18px 14px !important; }
+          .contact-card { padding: 22px 18px !important; }
         }
 
-        @media (max-width: 400px) {
+        /* ── Small Phones & Foldables ── */
+        @media (max-width: 480px) {
+          .hero-section h1 { font-size: clamp(1.9rem, 7.5vw, 2.3rem) !important; }
+          .hero-section p { font-size: 15.5px !important; }
           .nav-inner > div:first-child { font-size: 17px !important; }
+          .contact-card h2 { font-size: 1.65rem !important; }
+        }
+
+        .back-to-top-btn:hover {
+          transform: translate(-2px, -2px) !important;
+          box-shadow: 5px 5px 0px ${C.ink} !important;
+          background: ${C.yellowDeep} !important;
+        }
+        .back-to-top-btn:active {
+          transform: translate(1px, 1px) !important;
+          box-shadow: 2px 2px 0px ${C.ink} !important;
+        }
+
+        @media (max-width: 640px) {
+          .back-to-top-btn {
+            bottom: 20px !important;
+            right: 20px !important;
+            width: 42px !important;
+            height: 42px !important;
+          }
         }
       `}</style>
 
@@ -927,7 +1245,42 @@ export default function Portfolio() {
       <Education />
       <Projects />
       <Achievements />
+      <Blogs />
       <Contact />
+
+      {/* Back to top button */}
+      <button
+        type="button"
+        onClick={scrollToTop}
+        aria-label="Back to top"
+        title="Back to top"
+        className={`back-to-top-btn ${showBackToTop ? "visible" : ""}`}
+        style={{
+          position: "fixed",
+          bottom: 28,
+          right: 28,
+          width: 46,
+          height: 46,
+          borderRadius: 12,
+          background: C.yellow,
+          border: `2.5px solid ${C.ink}`,
+          boxShadow: `3px 3px 0px ${C.ink}`,
+          color: C.ink,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          zIndex: 99,
+          opacity: showBackToTop ? 1 : 0,
+          pointerEvents: showBackToTop ? "auto" : "none",
+          transform: showBackToTop ? "translateY(0) scale(1)" : "translateY(16px) scale(0.85)",
+          transition: "opacity 0.25s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.15s ease, background 0.15s ease",
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="18 15 12 9 6 15" />
+        </svg>
+      </button>
     </div>
   );
 }
