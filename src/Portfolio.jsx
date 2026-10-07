@@ -541,11 +541,11 @@ function Hero() {
             <span style={{ color: C.blue }}>Kumar Simhadri</span>
           </h1>
           <p style={{ fontFamily: FONTS.body, fontSize: 18, color: C.inkSoft, maxWidth: 520, lineHeight: 1.6, marginBottom: 26 }}>
-            Computer Science student delivering high-impact backend systems at scale.
+            Computer Science graduate delivering high-impact backend systems at scale.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Pill bg={C.green}>STUDENT</Pill>
-            <Pill bg={C.cyan}>BACKEND ENGINEER INTERN</Pill>
+            <Pill bg={C.green}>GRADUATE</Pill>
+            <Pill bg={C.cyan}>BACKEND ENGINEER </Pill>
             <Pill bg={C.blue} color="#fff">DEVELOPER</Pill>
           </div>
         </div>
