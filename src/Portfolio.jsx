@@ -382,7 +382,7 @@ function HomeArt() {
    Sections
    ──────────────────────────────────────────────────────────── */
 function Nav({ active }) {
-  const items = ["About", "Skills", "Experience", "Projects", "Blogs", "Contact"];
+  const items = ["About", "Skills", "Experience", "Projects", "Activity", "Blogs", "Contact"];
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleClick = (e, id) => {
@@ -839,6 +839,638 @@ function Projects() {
   );
 }
 
+function GitCommitIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <line x1="1.05" y1="12" x2="7" y2="12" />
+      <line x1="17.05" y1="12" x2="22.95" y2="12" />
+    </svg>
+  );
+}
+
+function GitBranchIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="6" y1="3" x2="6" y2="15" />
+      <circle cx="18" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <path d="M18 9a9 9 0 0 1-9 9" />
+    </svg>
+  );
+}
+
+/* Fallback dataset if offline or rate-limited */
+const FALLBACK_CONTRIB_STATS = {
+  total: 571,
+  activeDays: 97,
+  maxDaily: 49,
+};
+
+const FALLBACK_EVENTS = [
+  {
+    id: "fb-1",
+    repo: "spk-2005/resume-api",
+    branch: "main",
+    sha: "c10e64e",
+    message: "Pushed to main — semantic resume-to-job matching & latency optimization",
+    timeAgo: "3 days ago",
+    date: "2026-10-14",
+    url: "https://github.com/spk-2005/resume-api",
+  },
+  {
+    id: "fb-2",
+    repo: "spk-2005/online-exam-departmental-test",
+    branch: "main",
+    sha: "7de1f5f",
+    message: "Pushed to main — automated CI/CD pipeline & student test runner",
+    timeAgo: "3 days ago",
+    date: "2026-10-14",
+    url: "https://github.com/spk-2005/online-exam-departmental-test",
+  },
+  {
+    id: "fb-3",
+    repo: "spk-2005/spk-2005",
+    branch: "main",
+    sha: "cb8ed31",
+    message: "Pushed to main — developer documentation & architecture benchmarks",
+    timeAgo: "5 days ago",
+    date: "2026-10-12",
+    url: "https://github.com/spk-2005/spk-2005",
+  },
+  {
+    id: "fb-4",
+    repo: "spk-2005/protofolio",
+    branch: "main",
+    sha: "5ce6db8",
+    message: "Pushed to main — responsive layout polishing and dynamic tokens",
+    timeAgo: "10 days ago",
+    date: "2026-10-07",
+    url: "https://github.com/spk-2005/protofolio",
+  },
+];
+
+function formatEventTime(dateStr) {
+  if (!dateStr) return "recently";
+  const now = new Date();
+  const past = new Date(dateStr);
+  const diffSec = Math.floor((now - past) / 1000);
+  if (isNaN(diffSec) || diffSec < 0) return "recently";
+  if (diffSec < 60) return "just now";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays === 1) return "yesterday";
+  if (diffDays < 30) return `${diffDays}d ago`;
+  const diffMonths = Math.floor(diffDays / 30);
+  return `${diffMonths}mo ago`;
+}
+
+function GitActivity() {
+  const [contribDays, setContribDays] = useState([]);
+  const [totalContribs, setTotalContribs] = useState(FALLBACK_CONTRIB_STATS.total);
+  const [activeDays, setActiveDays] = useState(FALLBACK_CONTRIB_STATS.activeDays);
+  const [maxDaily, setMaxDaily] = useState(FALLBACK_CONTRIB_STATS.maxDaily);
+  const [publicRepos, setPublicRepos] = useState(51);
+  const [recentEvents, setRecentEvents] = useState(FALLBACK_EVENTS);
+  const [hoveredDay, setHoveredDay] = useState(null);
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    // 1. Fetch live contributions calendar
+    fetch("https://github-contributions-api.jogruber.de/v4/spk-2005?y=last")
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && Array.isArray(data.contributions) && data.contributions.length > 0) {
+          setContribDays(data.contributions);
+          let sum = 0;
+          let active = 0;
+          let peak = 0;
+          data.contributions.forEach((c) => {
+            sum += c.count || 0;
+            if (c.count > 0) active++;
+            if (c.count > peak) peak = c.count;
+          });
+          setTotalContribs(data.total?.lastYear || sum);
+          setActiveDays(active || FALLBACK_CONTRIB_STATS.activeDays);
+          setMaxDaily(peak || FALLBACK_CONTRIB_STATS.maxDaily);
+          setIsLive(true);
+        }
+      })
+      .catch(() => {
+        // Fallback silently kept
+      });
+
+    // 2. Fetch public repo count
+    fetch("https://api.github.com/users/spk-2005")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((u) => {
+        if (u && typeof u.public_repos === "number") {
+          setPublicRepos(u.public_repos);
+        }
+      })
+      .catch(() => {});
+
+    // 3. Fetch recent events
+    fetch("https://api.github.com/users/spk-2005/events?per_page=10")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((events) => {
+        if (Array.isArray(events) && events.length > 0) {
+          const pushes = events
+            .filter((e) => e.type === "PushEvent" || e.type === "CreateEvent")
+            .slice(0, 5)
+            .map((e) => {
+              const branch = e.payload?.ref ? e.payload.ref.replace("refs/heads/", "") : "main";
+              const sha = e.payload?.head ? e.payload.head.substring(0, 7) : "";
+              const repoShort = (e.repo?.name || "").replace("spk-2005/", "");
+              return {
+                id: e.id,
+                repo: e.repo?.name || "spk-2005/repository",
+                repoShort: repoShort || e.repo?.name,
+                branch,
+                sha,
+                type: e.type,
+                date: e.created_at,
+                timeAgo: formatEventTime(e.created_at),
+                url: `https://github.com/${e.repo?.name}`,
+              };
+            });
+          if (pushes.length > 0) {
+            setRecentEvents(pushes);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Build 53 columns x 7 rows
+  const weeks = [];
+  if (contribDays.length > 0) {
+    for (let i = 0; i < contribDays.length; i += 7) {
+      weeks.push(contribDays.slice(i, i + 7));
+    }
+  }
+
+  // Month labels
+  const monthLabels = [];
+  let prevMonth = "";
+  weeks.forEach((wk, colIdx) => {
+    if (wk[0] && wk[0].date) {
+      const m = new Date(wk[0].date).toLocaleString("en-US", { month: "short" });
+      if (m !== prevMonth) {
+        monthLabels.push({ col: colIdx, label: m });
+        prevMonth = m;
+      }
+    }
+  });
+
+  const getCellColor = (count, level) => {
+    if (!count || count === 0) return "#EAEFF7";
+    if (level === 1 || count <= 2) return "#A7F3D0";
+    if (level === 2 || count <= 8) return "#5DE3B5";
+    if (level === 3 || count <= 16) return "#2FD9A0";
+    return "#10B981";
+  };
+
+  const formatFullDate = (dateStr) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  return (
+    <section id="activity" style={styles.section}>
+      <div style={styles.wrap}>
+        <Reveal>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <Eyebrow>Open Source & Code</Eyebrow>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONTS.body, fontSize: 13, fontWeight: 700, color: C.ink }}>
+              <span
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: "50%",
+                  background: isLive ? "#10B981" : C.yellow,
+                  boxShadow: `0 0 0 2px ${isLive ? "#A7F3D0" : "#FDE68A"}`,
+                  display: "inline-block",
+                  animation: "pulseDot 2s infinite ease-in-out",
+                }}
+              />
+              <span>{isLive ? "LIVE GITHUB SYNC" : "GITHUB CONNECTED"}</span>
+            </div>
+          </div>
+          <SectionTitle>Git Activity</SectionTitle>
+          <p style={{ ...styles.body, maxWidth: 760, margin: "0 0 32px" }}>
+            Real-time contribution frequency, production commits, and active open-source repositories from{" "}
+            <a
+              href={PROFILE.github}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: C.blue, fontWeight: 700, textDecoration: "none" }}
+            >
+              @spk-2005
+            </a>
+            .
+          </p>
+        </Reveal>
+
+        {/* 4 Stat Cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18, marginBottom: 28 }} className="git-stats-grid">
+          <Reveal delay={0}>
+            <BrutalCard bg={C.green} style={{ padding: 22, height: "100%" }} className="git-stat-card">
+              <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.ink, opacity: 0.8, textTransform: "uppercase" }}>
+                Annual Activity
+              </div>
+              <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: "clamp(2rem, 3.5vw, 2.6rem)", color: C.ink, margin: "6px 0 4px", lineHeight: 1 }}>
+                {totalContribs}+
+              </div>
+              <div style={{ fontFamily: FONTS.body, fontSize: 14, color: C.ink, fontWeight: 600, opacity: 0.85 }}>
+                Contributions in past year
+              </div>
+            </BrutalCard>
+          </Reveal>
+
+          <Reveal delay={70}>
+            <BrutalCard bg={C.yellow} style={{ padding: 22, height: "100%" }} className="git-stat-card">
+              <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.ink, opacity: 0.8, textTransform: "uppercase" }}>
+                Repositories
+              </div>
+              <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: "clamp(2rem, 3.5vw, 2.6rem)", color: C.ink, margin: "6px 0 4px", lineHeight: 1 }}>
+                {publicRepos}
+              </div>
+              <div style={{ fontFamily: FONTS.body, fontSize: 14, color: C.ink, fontWeight: 600, opacity: 0.85 }}>
+                Public codebases & APIs
+              </div>
+            </BrutalCard>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <BrutalCard bg={C.cyan} style={{ padding: 22, height: "100%" }} className="git-stat-card">
+              <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.ink, opacity: 0.8, textTransform: "uppercase" }}>
+                Active Cadence
+              </div>
+              <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: "clamp(2rem, 3.5vw, 2.6rem)", color: C.ink, margin: "6px 0 4px", lineHeight: 1 }}>
+                {activeDays}
+              </div>
+              <div style={{ fontFamily: FONTS.body, fontSize: 14, color: C.ink, fontWeight: 600, opacity: 0.85 }}>
+                Active shipping days
+              </div>
+            </BrutalCard>
+          </Reveal>
+
+          <Reveal delay={210}>
+            <BrutalCard bg={C.purple} style={{ padding: 22, height: "100%" }} className="git-stat-card">
+              <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.ink, opacity: 0.8, textTransform: "uppercase" }}>
+                Peak Velocity
+              </div>
+              <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: "clamp(2rem, 3.5vw, 2.6rem)", color: C.ink, margin: "6px 0 4px", lineHeight: 1 }}>
+                {maxDaily}
+              </div>
+              <div style={{ fontFamily: FONTS.body, fontSize: 14, color: C.ink, fontWeight: 600, opacity: 0.85 }}>
+                Max daily contributions
+              </div>
+            </BrutalCard>
+          </Reveal>
+        </div>
+
+        {/* Contribution Calendar Heatmap Card */}
+        <Reveal delay={100}>
+          <BrutalCard style={{ padding: "26px 28px", marginBottom: 28 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 14, marginBottom: 20 }}>
+              <div>
+                <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 20, color: C.ink }}>
+                  Contribution Calendar
+                </div>
+                <div style={{ fontFamily: FONTS.body, fontSize: 14, color: C.inkSoft, marginTop: 4 }}>
+                  {hoveredDay ? (
+                    <span style={{ color: C.ink, fontWeight: 700 }}>
+                      🎯 {hoveredDay.count} {hoveredDay.count === 1 ? "contribution" : "contributions"} on {formatFullDate(hoveredDay.date)}
+                    </span>
+                  ) : (
+                    <span>Hover or tap any square to view daily contribution details</span>
+                  )}
+                </div>
+              </div>
+              <a
+                href={PROFILE.github}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontFamily: FONTS.body,
+                  fontWeight: 700,
+                  fontSize: 13.5,
+                  color: C.ink,
+                  textDecoration: "none",
+                  padding: "7px 16px",
+                  borderRadius: 999,
+                  background: C.yellow,
+                  border: `2px solid ${C.ink}`,
+                  boxShadow: `2px 2px 0px ${C.ink}`,
+                }}
+                className="project-link-btn"
+              >
+                <GithubIcon size={15} />
+                <span>@spk-2005</span>
+                <ExternalLinkIcon size={13} />
+              </a>
+            </div>
+
+            {/* Heatmap Grid (Scrollable on small screens) */}
+            <div className="contrib-scroll-wrap">
+              <div style={{ minWidth: 800, paddingBottom: 6 }}>
+                {/* Month labels row */}
+                <div style={{ display: "flex", marginBottom: 6, paddingLeft: 34, position: "relative", height: 18 }}>
+                  {monthLabels.map((m, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        position: "absolute",
+                        left: 34 + m.col * 15,
+                        fontFamily: FONTS.body,
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        color: C.inkSoft,
+                      }}
+                    >
+                      {m.label}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Day labels + 53 columns */}
+                <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
+                  {/* Day labels */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3, width: 30, marginRight: 4, fontFamily: FONTS.body, fontSize: 10, fontWeight: 700, color: C.inkSoft, lineHeight: "12px" }}>
+                    <span style={{ height: 12 }}>Sun</span>
+                    <span style={{ height: 12, opacity: 0 }}>Mon</span>
+                    <span style={{ height: 12 }}>Tue</span>
+                    <span style={{ height: 12, opacity: 0 }}>Wed</span>
+                    <span style={{ height: 12 }}>Thu</span>
+                    <span style={{ height: 12, opacity: 0 }}>Fri</span>
+                    <span style={{ height: 12 }}>Sat</span>
+                  </div>
+
+                  {/* Columns */}
+                  {weeks.length > 0 ? (
+                    weeks.map((week, wIdx) => (
+                      <div key={wIdx} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        {week.map((day, dIdx) => (
+                          <div
+                            key={dIdx}
+                            onMouseEnter={() => setHoveredDay(day)}
+                            onMouseLeave={() => setHoveredDay(null)}
+                            onClick={() => setHoveredDay(day)}
+                            title={`${day.count} contributions on ${day.date}`}
+                            className="contrib-cell"
+                            style={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: 2.5,
+                              background: getCellColor(day.count, day.level),
+                              border: `1px solid ${day.count > 0 ? "rgba(28, 35, 51, 0.28)" : "rgba(28, 35, 51, 0.12)"}`,
+                              cursor: "pointer",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))
+                  ) : (
+                    /* Fallback mini visual grid if loading */
+                    <div style={{ padding: "20px 0", fontFamily: FONTS.body, fontSize: 14, color: C.inkSoft }}>
+                      Loading contribution graph...
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Heatmap Footer Legend */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginTop: 16, paddingTop: 14, borderTop: `1.5px dashed ${C.grid}` }}>
+              <div style={{ fontFamily: FONTS.body, fontSize: 13, color: C.inkSoft }}>
+                Showing 52-week activity • <strong>{totalContribs} total commits & contributions</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: FONTS.body, fontSize: 12, fontWeight: 600, color: C.inkSoft }}>
+                <span>Less</span>
+                <span style={{ width: 11, height: 11, borderRadius: 2, background: "#EAEFF7", border: `1px solid rgba(28, 35, 51, 0.15)` }} />
+                <span style={{ width: 11, height: 11, borderRadius: 2, background: "#A7F3D0", border: `1px solid rgba(28, 35, 51, 0.2)` }} />
+                <span style={{ width: 11, height: 11, borderRadius: 2, background: "#5DE3B5", border: `1px solid rgba(28, 35, 51, 0.2)` }} />
+                <span style={{ width: 11, height: 11, borderRadius: 2, background: "#2FD9A0", border: `1px solid rgba(28, 35, 51, 0.2)` }} />
+                <span style={{ width: 11, height: 11, borderRadius: 2, background: "#10B981", border: `1px solid rgba(28, 35, 51, 0.2)` }} />
+                <span>More</span>
+              </div>
+            </div>
+          </BrutalCard>
+        </Reveal>
+
+        {/* 2-Column: Live Recent Commits Feed + GitHub Highlights Card */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.22fr 0.78fr", gap: 24 }} className="git-feed-grid">
+          {/* Recent Commits Stream */}
+          <Reveal delay={140}>
+            <BrutalCard style={{ padding: 26, height: "100%" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: C.yellow, border: `2px solid ${C.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <GitCommitIcon size={18} color={C.ink} />
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 18, color: C.ink }}>
+                      Recent Commits & Pushes
+                    </div>
+                    <div style={{ fontFamily: FONTS.body, fontSize: 12.5, color: C.inkSoft }}>
+                      Real-time activity from public branches
+                    </div>
+                  </div>
+                </div>
+                <Pill bg="#fff">{recentEvents.length} Recent</Pill>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {recentEvents.map((evt, idx) => (
+                  <a
+                    key={evt.id || idx}
+                    href={evt.url || PROFILE.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div
+                      className="git-event-row"
+                      style={{
+                        padding: "14px 16px",
+                        background: "#F8F9FC",
+                        border: `2px solid ${C.ink}`,
+                        borderRadius: 14,
+                        boxShadow: `2px 2px 0px ${C.ink}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 12,
+                      }}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 5 }}>
+                          <span style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 14.5, color: C.ink }}>
+                            {evt.repoShort || evt.repo}
+                          </span>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontFamily: FONTS.body,
+                              fontWeight: 700,
+                              fontSize: 11,
+                              padding: "2px 8px",
+                              borderRadius: 999,
+                              background: C.cyan,
+                              border: `1.5px solid ${C.ink}`,
+                              color: C.ink,
+                            }}
+                          >
+                            <GitBranchIcon size={11} color={C.ink} />
+                            {evt.branch || "main"}
+                          </span>
+                          {evt.sha && (
+                            <span
+                              style={{
+                                fontFamily: "monospace",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                background: "#fff",
+                                padding: "2px 6px",
+                                borderRadius: 6,
+                                border: `1.5px solid ${C.ink}`,
+                                color: C.inkSoft,
+                              }}
+                            >
+                              {evt.sha}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ fontFamily: FONTS.body, fontSize: 13, color: C.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {evt.message || `Pushed to ${evt.branch || "main"} on ${evt.repo}`}
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <span style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 12, color: C.inkSoft, background: "#fff", border: `1.5px solid ${C.ink}`, borderRadius: 8, padding: "4px 8px", display: "inline-block" }}>
+                          {evt.timeAgo}
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </BrutalCard>
+          </Reveal>
+
+          {/* GitHub Profile & Repository Spotlight */}
+          <Reveal delay={200}>
+            <BrutalCard bg={C.card} style={{ padding: 26, height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+                  <img
+                    src="https://avatars.githubusercontent.com/u/145567083?v=4"
+                    alt={PROFILE.name}
+                    style={{
+                      width: 54,
+                      height: 54,
+                      borderRadius: "50%",
+                      border: `2.5px solid ${C.ink}`,
+                      boxShadow: `2px 2px 0px ${C.ink}`,
+                    }}
+                  />
+                  <div>
+                    <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 18, color: C.ink }}>
+                      Prasanna Kumar
+                    </div>
+                    <a
+                      href={PROFILE.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ fontFamily: FONTS.body, fontSize: 13.5, color: C.blue, fontWeight: 700, textDecoration: "none" }}
+                    >
+                      @spk-2005 ↗
+                    </a>
+                  </div>
+                </div>
+
+                <p style={{ fontFamily: FONTS.body, fontSize: 14, color: C.inkSoft, lineHeight: 1.6, marginBottom: 18 }}>
+                  Passionate about building scalable backend services, optimizing distributed databases like ClickHouse, and developing production-grade APIs.
+                </p>
+
+                <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.2, color: C.inkSoft, marginBottom: 10, textTransform: "uppercase" }}>
+                  Primary Ecosystem
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 22 }}>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: C.yellow, border: `2px solid ${C.ink}`, color: C.ink }}>
+                    Java
+                  </span>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: C.cyan, border: `2px solid ${C.ink}`, color: C.ink }}>
+                    Python
+                  </span>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: C.green, border: `2px solid ${C.ink}`, color: C.ink }}>
+                    ClickHouse
+                  </span>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: C.pink, border: `2px solid ${C.ink}`, color: C.ink }}>
+                    FastAPI
+                  </span>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: C.orange, border: `2px solid ${C.ink}`, color: C.ink }}>
+                    Spring Boot
+                  </span>
+                  <span className="skill-chip" style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 999, background: "#fff", border: `2px solid ${C.ink}`, color: C.ink }}>
+                    Docker
+                  </span>
+                </div>
+              </div>
+
+              <a
+                href={PROFILE.github}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  fontFamily: FONTS.body,
+                  fontWeight: 700,
+                  fontSize: 14.5,
+                  padding: "14px 20px",
+                  borderRadius: 14,
+                  background: C.yellow,
+                  color: C.ink,
+                  border: `2.5px solid ${C.ink}`,
+                  boxShadow: `4px 4px 0px ${C.ink}`,
+                  textDecoration: "none",
+                  textAlign: "center",
+                }}
+                className="project-link-btn"
+              >
+                <GithubIcon size={18} />
+                <span>Explore All 51+ Repositories</span>
+                <ExternalLinkIcon size={15} />
+              </a>
+            </BrutalCard>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Achievements() {
   return (
     <section style={styles.section}>
@@ -1052,7 +1684,7 @@ export default function Portfolio() {
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
-    const ids = ["about", "skills", "experience", "projects", "blogs", "contact"];
+    const ids = ["about", "skills", "experience", "projects", "activity", "blogs", "contact"];
     const onScroll = () => {
       let current = "About";
       for (const id of ids) {
@@ -1152,6 +1784,48 @@ export default function Portfolio() {
           background: ${C.yellowDeep} !important;
         }
 
+        /* ── Git Activity custom styling ── */
+        .git-stats-grid > div > .brutal-card:hover {
+          transform: translate(-3px, -3px);
+          box-shadow: 8px 8px 0px ${C.ink} !important;
+        }
+        .contrib-scroll-wrap {
+          overflow-x: auto;
+          padding-bottom: 8px;
+          -webkit-overflow-scrolling: touch;
+        }
+        .contrib-scroll-wrap::-webkit-scrollbar {
+          height: 8px;
+        }
+        .contrib-scroll-wrap::-webkit-scrollbar-track {
+          background: #F1F3F7;
+          border-radius: 4px;
+        }
+        .contrib-scroll-wrap::-webkit-scrollbar-thumb {
+          background: ${C.ink};
+          border-radius: 4px;
+        }
+        .contrib-cell {
+          transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .contrib-cell:hover {
+          transform: scale(1.4);
+          box-shadow: 0 0 0 2px ${C.ink};
+          z-index: 5;
+        }
+        .git-event-row {
+          transition: transform 0.15s cubic-bezier(0.22,1,0.36,1), box-shadow 0.15s cubic-bezier(0.22,1,0.36,1);
+        }
+        .git-event-row:hover {
+          transform: translate(-2px, -2px);
+          box-shadow: 4px 4px 0px ${C.ink} !important;
+        }
+        @keyframes pulseDot {
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
         /* Mobile nav dropdown hidden by default; toggled inline by React state */
         .nav-mobile-menu { display: none; }
 
@@ -1178,6 +1852,8 @@ export default function Portfolio() {
           .hero-grid > div:last-child { order: -1; }
           .skills-grid { grid-template-columns: 1fr 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
+          .git-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .git-feed-grid { grid-template-columns: 1fr !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
@@ -1201,6 +1877,7 @@ export default function Portfolio() {
           .skills-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
+          .git-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
           .timeline { padding-left: 50px !important; }
           .timeline-rail { left: 10px !important; }
@@ -1244,6 +1921,7 @@ export default function Portfolio() {
       <Experience />
       <Education />
       <Projects />
+      <GitActivity />
       <Achievements />
       <Blogs />
       <Contact />
