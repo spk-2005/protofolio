@@ -34,118 +34,137 @@ const SHADOW = `4px 4px 0px ${C.ink}`;
    ──────────────────────────────────────────────────────────── */
 const PROFILE = {
   name: "Prasanna Kumar Simhadri",
-  tagline: "Software Engineer building scalable backend systems",
+  tagline: "Software Engineer specializing in AI Agent Trust Infrastructure & Production Analytics",
   email: "prasannasimha5002@gmail.com",
   phone: "+91 8309179509",
   github: "https://github.com/spk-2005",
   linkedin: "https://linkedin.com/in/prasanna-kumar-simhadri",
   medium: "https://medium.com/@prasannasimha5002",
-  tags: ["Backend Engineer", "Distributed Systems", "Full-Stack"],
+  resume: "https://drive.google.com/file/d/1yPDWHtRH-2DnFd7Zxqi3NXFw_WMFkbPf/view",
+  tags: ["AI Agent Systems", "Agent Guardrails & MCP", "ClickHouse & Production Analytics", "FastAPI & Distributed Systems"],
   aboutIntro:
-    "I build backend systems and data-intensive applications with a focus on scalability, performance, and reliability. My experience spans Java, Spring Boot, Python, FastAPI, SQL, and distributed data systems such as ClickHouse, with hands-on experience optimizing production workloads and building APIs from the ground up.",
+    "I am a Software Engineer with a specialized background in Computer Science & Data Science (2026) and hands-on experience building AI agent trust infrastructure, production analytics services, and data-driven web applications. I am the creator of Trulin, an AI agent evaluation and decision gate platform that intercepts autonomous agent actions, verifies ground-truth context, and isolates model failure modes in real time.",
   aboutValue:
-    "I enjoy working close to the system — investigating performance bottlenecks, designing APIs and data flows, optimizing database queries, and turning complex requirements into reliable software. I can also work across the stack when the product requires it.",
+    "I combine strong foundations in data science, statistics, and backend systems with a sharp product sense to analyze complex system trade-offs: latency vs. accuracy, cost vs. precision, and deterministic verification vs. probabilistic generation. Experienced in ClickHouse query optimization, A/B testing analytics, and root cause analysis (RCA) in high-throughput environments.",
   aboutContinued:
-    "I'm a Computer Science (Data Science) graduate from R.V.R & J.C College of Engineering. At Wingify (VWO), I worked on production analytics systems and optimized ClickHouse workloads across multiple modules. Outside of professional work, I've built backend-heavy products involving NLP, authentication, databases, and real-time systems, while leading teams at national-level hackathons.",
-  domains: ["backend systems", "distributed data", "full-stack"],
+    "I hold a B.Tech in Computer Science and Engineering (Data Science) from R.V.R & J.C College of Engineering (CGPA 8.5/10). At Wingify (VWO), I optimized production ClickHouse workloads and engineered analytics services in Core Java/Spring Boot across 5+ modules. Outside professional work, I build agent trust systems, high-concurrency platforms, and have led cross-functional teams at national-level hackathons including Smart India Hackathon (ISRO).",
+  domains: ["AI Agent Trust", "Context Provenance", "ClickHouse Analytics", "Distributed Backends"],
   keywords: [
-    "Java", "Spring Boot", "Python", "SQL", "ClickHouse", "Docker",
-    "Kubernetes", "Kafka", "React.js",
+    "Trulin", "Agent Guardrails", "Model Context Protocol (MCP)", "FastAPI", "Python",
+    "Java", "Spring Boot", "ClickHouse", "SQL PREWHERE", "Redis", "Docker", "PostgreSQL"
   ],
 };
+
 const SKILL_GROUPS = [
   {
-    title: "Languages",
-    color: C.yellow,
-    items: ["Java", "Python", "SQL", "JavaScript", "TypeScript", "C++", "Golang"]
-  },
-  {
-    title: "Backend & Distributed Systems",
-    color: C.blue,
+    title: "AI & Agent Systems",
+    color: C.purple,
     items: [
-      "Spring Boot",
-      "FastAPI",
-      "Node.js",
-      "REST APIs",
-      "Microservices",
-      "Kafka",
-      "Redis"
+      "Agent Interception & Guardrails",
+      "Context Provenance",
+      "Hallucination & Conflict Detection",
+      "Ground-Truth Verification",
+      "Model Context Protocol (MCP)",
+      "Semantic Search (BM25+, TF-IDF)",
+      "SPO Triples Extraction",
     ]
   },
   {
-    title: "Databases & Data",
+    title: "Data Science & Evaluation",
+    color: C.yellow,
+    items: [
+      "Statistical Analysis",
+      "Evaluation Metrics (Precision, Recall, F1)",
+      "Latency vs. Throughput Profiling",
+      "A/B Testing Analytics",
+      "Data Structures & Algorithms"
+    ]
+  },
+  {
+    title: "Backend & APIs",
+    color: C.blue,
+    items: [
+      "FastAPI",
+      "Spring Boot",
+      "Core Java",
+      "Node.js",
+      "Express.js",
+      "REST APIs & Microservices",
+      "Asynchronous Processing",
+      "JWT Authentication"
+    ]
+  },
+  {
+    title: "Databases & Storage",
     color: C.green,
     items: [
       "ClickHouse",
       "PostgreSQL",
-      "MySQL",
+      "Redis Caching",
       "MongoDB",
-      "Redis",
-      "Query Optimization"
+      "MySQL",
+      "Query Optimization (PREWHERE, Indexing, Column Pruning)"
     ]
   },
   {
-    title: "Cloud & DevOps",
+    title: "DevOps & Reliability",
     color: C.orange,
     items: [
       "Docker",
-      "Kubernetes",
-      "AWS",
-      "Azure",
-      "Linux",
-      "CI/CD"
+      "Git & GitHub Actions",
+      "CI/CD Pipelines",
+      "Unit Testing (JUnit, Pytest)",
+      "Integration Testing",
+      "Root Cause Analysis (RCA)",
+      "Telemetry Query Analysis"
     ]
   },
   {
-    title: "Frontend",
+    title: "Languages & Frontend",
     color: C.cyan,
     items: [
-      "React.js",
-      "Next.js",
-      "Angular.js",
-      "Tailwind CSS"
-    ]
-  },
-  {
-    title: "AI / ML",
-    color: C.purple,
-    items: [
-      "NLP",
-      "LangChain",
-      "ChromaDB",
-      "Hugging Face",
-      "OpenCV",
-      "Tesseract OCR",
-      "NumPy"
+      "Python",
+      "Java",
+      "TypeScript",
+      "JavaScript",
+      "SQL",
+      "C++",
+      "Golang",
+      "React",
+      "Vite",
+      "Interactive Dashboards"
     ]
   },
 ];
+
 const EXPERIENCE = [
- {
-  n: "1",
-  color: C.yellow,
-  role: "Backend Engineer Intern",
-  company: "Wingify (VWO)",
-  duration: "May 2026 – Jul 2026",
-  bullets: [
-    "Worked on production backend systems across 5+ VWO analytics modules using Java, Spring Boot, and ClickHouse.",
-    "Investigated production query bottlenecks across a distributed ClickHouse cluster and optimized workloads using PREWHERE pushdown, column pruning, and query restructuring.",
-    "Reduced query execution time by up to 50%, scanned data by up to 35%, and scanned rows by up to 40% across analytics workloads.",
-    "Designed test cases and benchmarked optimized queries across multiple production-scale time ranges, maintaining 100% functional parity with existing implementations."
-  ],
-},
- {
-  n: "2",
-  color: C.cyan,
-  role: "Full Stack Intern",
-  company: "Stealth AI Startup",
-  duration: "Apr 2026 – May 2026",
-  bullets: [
-    "Built and maintained the company's customer-facing web application with responsive layouts across desktop and mobile devices.",
-    "Implemented Google Tag Manager event tracking, custom triggers, and data-layer configurations to improve product analytics.",
-    "Improved discoverability through technical SEO, structured data, and AI-search optimization."
-  ],
-},
+  {
+    n: "1",
+    color: C.yellow,
+    role: "Backend Engineer Intern — Core Java & Analytics Systems",
+    company: "Wingify (VWO)",
+    duration: "May 2026 – July 2026",
+    bullets: [
+      "Developed production analytics services in Core Java and Spring Boot, building and extending REST APIs consumed by React dashboards across 5+ modules (A/B Testing, Dashboard Insights, Session Recordings, Survey Analytics).",
+      "Profiled and optimized 5+ production SQL / ClickHouse queries using PREWHERE pushdown, column pruning, and query restructuring, achieving 50% lower execution time, 35% reduction in scanned data, and 40% fewer processed rows.",
+      "Performed backend troubleshooting, telemetry query analysis, and root cause analysis (RCA) to isolate and fix production performance bottlenecks and data-integrity edge cases.",
+      "Wrote comprehensive JUnit unit and integration tests and validated service behavior in CI/CD pipelines before deployment."
+    ],
+    highlights: ["50% Lower Query Time", "35% Data Scanned Reduction", "ClickHouse PREWHERE Pushdown", "Root Cause Analysis (RCA)"],
+  },
+  {
+    n: "2",
+    color: C.cyan,
+    role: "Full Stack Intern — React & Web Interfaces",
+    company: "Stealth AI Startup",
+    duration: "April 2026 – May 2026",
+    bullets: [
+      "Built and maintained the company’s production React JS web application consuming REST APIs, integrating analytics event tracking to observe user interaction funnels and reduce UI layout issues by 40%.",
+      "Implemented event tracking, custom triggers, and telemetry configurations to evaluate user funnels and identify product drop-off patterns.",
+      "Optimized responsive layouts across desktop and mobile, improved discoverability through technical SEO, and resolved edge-case rendering bottlenecks."
+    ],
+    highlights: ["40% Fewer UI Issues", "User Funnel Telemetry", "React & REST APIs"],
+  },
 ];
 
 const EDUCATION = {
@@ -158,47 +177,101 @@ const EDUCATION = {
 
 const PROJECTS = [
   {
-    name: "Online Exam Portal",
-    metric: "₹100K+ revenue",
-    color: C.green,
-    desc: "Secure, scalable full-stack examination platform supporting 1,000+ concurrent users, with JWT auth, automated CI/CD test pipelines, and a React admin dashboard.",
-    stack: ["Node.js", "React", "TypeScript", "MongoDB"],
-    github: "https://github.com/spk-2005/online-exam-departmental-test",
-    live: "https://departmental-tests.netlify.app/",
+    name: "Trulin (Context Trust Layer)",
+    metric: "Sub-Second Decision Latency",
+    color: C.blue,
+    badge: "FLAGSHIP PROJECT",
+    isFlagship: true,
+    desc: "Autonomous AI agent evaluation & provenance platform that intercepts agent tool calls in real time, validating candidate actions against verified ground-truth knowledge stores before execution.",
+    bullets: [
+      "Built a deterministic Decision Evaluator & Conflict Engine in Python/FastAPI extracting atomic claims (Subject-Predicate-Object triples) to prevent hallucinations & policy violations.",
+      "Engineered an interactive React dashboard with an Agent Chat Playground, Live Scenario Simulator, and Model Context Protocol (MCP) client to benchmark agent decision traces.",
+      "Implemented relational modeling, Redis caching, and asynchronous evaluation pipelines to enforce sub-second decision latency."
+    ],
+    stack: ["FastAPI", "Python", "React", "PostgreSQL", "Redis", "Docker", "MCP"],
+    github: "https://github.com/spk-2005",
+    blogs: [
+      {
+        label: "Atomic Claims Thesis",
+        url: "https://medium.com/@prasannasimha5002/how-trulin-turns-messy-documents-into-atomic-verifiable-claims-0a1eaffb9b65",
+        bg: C.yellow,
+      },
+      {
+        label: "Agent Verifiability",
+        url: "https://medium.com/@prasannasimha5002/why-semantic-search-isnt-enough-when-ai-agents-can-take-actions-8d1219c7bb38",
+        bg: C.cyan,
+      },
+    ],
   },
   {
-    name: "JD-Aware ATS Resume Analyzer",
-    metric: "20ms p95 latency",
+    name: "JD-Aware ATS Semantic Evaluation Engine",
+    metric: "20 ms p95 latency",
     color: C.purple,
-    desc: "Production-grade ATS analyzer using BM25+, TF-IDF, and NLP for semantic resume-to-job matching, built on a modular, scalable backend.",
-    stack: ["FastAPI", "Python", "PostgreSQL", "NLP"],
+    desc: "High-performance evaluation backend that computes semantic alignment between resumes and job descriptions using BM25+ and TF-IDF lexical matching algorithms, benchmarked across varying document lengths.",
+    stack: ["FastAPI", "Python", "PostgreSQL", "BM25+", "TF-IDF"],
     github: "https://github.com/spk-2005/resume-api",
   },
   {
-    name: "RVRBot — College Chatbot",
-    metric: "real-time responses",
-    color: C.cyan,
-    desc: "NLP-powered chatbot using TF-IDF semantic search, intent detection, and Levenshtein-based spell correction for context-aware college queries.",
-    stack: ["React.js", "Node.js", "Express.js", "NLP"],
-    github: "https://github.com/spk-2005/chatbot",
+    name: "Online Exam Portal (Scale & Concurrency)",
+    metric: "₹100K+ revenue | 1,000+ users",
+    color: C.green,
+    desc: "Scalable assessment backend supporting 1,000+ concurrent test-takers, with secure REST APIs, JWT authentication, administrative review workflows, and automated CI/CD validation pipelines.",
+    stack: ["Node.js", "React", "TypeScript", "MongoDB", "JWT", "GitHub Actions"],
+    github: "https://github.com/spk-2005/online-exam-departmental-test",
+    live: "https://departmental-tests.netlify.app/",
   },
   {
     name: "Machine Unlearning: Ethical Forgetting",
     metric: "72% → 12% attack success",
     color: C.orange,
-    desc: "Dual-branch CNN reaching 97.9% accuracy while sharply reducing membership inference attacks and cutting training time from 120 to 18 minutes.",
-    stack: ["Python", "CNN", "MGDA Optimization"],
+    desc: "Dual-branch CNN reaching 97.9% accuracy while sharply mitigating membership inference attacks and reducing training time from 120 to 18 minutes using MGDA multi-objective optimization.",
+    stack: ["Python", "CNN", "MGDA Optimization", "Deep Learning"],
+  },
+  {
+    name: "RVRBot — Contextual College Chatbot",
+    metric: "Real-time responses",
+    color: C.cyan,
+    desc: "NLP-powered chatbot using TF-IDF semantic search, intent detection, and Levenshtein-based spell correction for context-aware queries and campus information retrieval.",
+    stack: ["React.js", "Node.js", "Express.js", "NLP"],
+    github: "https://github.com/spk-2005/chatbot",
   },
 ];
 
 const ACHIEVEMENTS = [
-  { color: C.yellow, title: "Runner Up — Rupajna Hackathon", note: "Organized by ITBI Center / RJE-NEST. Built a full-stack app end-to-end in-house." },
-  { color: C.green, title: "Team Lead — Smart India Hackathon 2025 (ISRO)", note: "Led a cross-functional team building a data-rich web app with React and Python under deadline pressure." },
-  { color: C.cyan, title: "Team Lead — VJ Hackathon 2025 (VNRVJIET)", note: "Directed a team through a full build cycle from idea to demo in a time-boxed sprint." },
-  { color: C.orange, title: "Certifications", note: "NPTEL (IIT Madras) — Joy of Computing Using Python; AICTE Virtual Internships in Web Development & Data Analytics." },
+  {
+    color: C.yellow,
+    title: "Team Lead — Smart India Hackathon 2025 (ISRO)",
+    note: "Led cross-functional teams building data-rich web applications with React and Python under tight deadlines, presenting system architecture and technical trade-offs to judges."
+  },
+  {
+    color: C.green,
+    title: "Team Lead — VJ Hackathon 2025 (VNRVJIET)",
+    note: "Directed cross-functional team through a full build cycle from concept to live demo in a time-boxed sprint, pitching architecture and reliability models."
+  },
+  {
+    color: C.cyan,
+    title: "Runner Up — Rupajna Hackathon",
+    note: "Organized by ITBI Center / RJE-NEST. Built and delivered an end-to-end full-stack data application under rigorous technical evaluation."
+  },
+  {
+    color: C.orange,
+    title: "Technical Certifications & Training",
+    note: "NPTEL (IIT Madras) — Joy of Computing Using Python; AICTE Virtual Internships in Web Development & Data Analytics."
+  },
 ];
 
 const BLOGS = [
+  {
+    title: "How Trulin Turns Messy Documents Into Atomic, Verifiable Claims",
+    subtitle: "Retrieving relevant information isn’t the same as having information that is safe to act on.",
+    desc: "Why traditional RAG chunks fail when autonomous agents take actions, and how Trulin’s deterministic pipeline extracts atomic, verifiable claims (SPO triples) with contradiction resolution and provenance tracking.",
+    date: "Oct 2026",
+    readTime: "8 min read",
+    platform: "Medium",
+    color: C.yellow,
+    tags: ["Context Engineering", "Atomic Claims", "AI Agents", "System Design"],
+    url: "https://medium.com/@prasannasimha5002/how-trulin-turns-messy-documents-into-atomic-verifiable-claims-0a1eaffb9b65",
+  },
   {
     title: "Why Semantic Search Isn’t Enough When AI Agents Can Take Actions",
     subtitle: "The problem isn’t retrieval. It’s verifiability.",
@@ -403,7 +476,7 @@ function Nav({ active }) {
         </div>
 
         {/* Desktop links — hidden below 720px */}
-        <div className="nav-links-desktop" style={{ display: "flex", gap: 30 }}>
+        <div className="nav-links-desktop" style={{ display: "flex", gap: 24, alignItems: "center" }}>
           {items.map((it) => (
             <a
               key={it}
@@ -435,6 +508,30 @@ function Nav({ active }) {
               />
             </a>
           ))}
+          <a
+            href={PROFILE.resume}
+            target="_blank"
+            rel="noreferrer"
+            className="project-link-btn"
+            style={{
+              fontFamily: FONTS.body,
+              fontWeight: 700,
+              fontSize: 13,
+              background: C.yellow,
+              color: C.ink,
+              border: `2px solid ${C.ink}`,
+              borderRadius: 8,
+              padding: "6px 14px",
+              boxShadow: `2px 2px 0px ${C.ink}`,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <span>Resume</span>
+            <ExternalLinkIcon size={12} />
+          </a>
         </div>
 
         {/* Hamburger — shown below 720px */}
@@ -503,6 +600,25 @@ function Nav({ active }) {
             {it}
           </a>
         ))}
+        <a
+          href={PROFILE.resume}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            fontFamily: FONTS.body,
+            fontWeight: 700,
+            fontSize: 15,
+            color: C.blue,
+            textDecoration: "none",
+            padding: "12px 4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span>View Resume (PDF)</span>
+          <ExternalLinkIcon size={14} />
+        </a>
       </div>
     </div>
   );
@@ -525,7 +641,7 @@ function Hero() {
             transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
           }}
         >
-          <Pill bg={C.yellow} border={C.ink}>SOFTWARE ENGINEER BUILDING SCALABLE SYSTEMS</Pill>
+          <Pill bg={C.yellow} border={C.ink}>AI AGENT TRUST INFRASTRUCTURE & BACKEND SYSTEMS</Pill>
           <h1
             style={{
               fontFamily: FONTS.display,
@@ -540,13 +656,94 @@ function Hero() {
             <br />
             <span style={{ color: C.blue }}>Kumar Simhadri</span>
           </h1>
-          <p style={{ fontFamily: FONTS.body, fontSize: 18, color: C.inkSoft, maxWidth: 520, lineHeight: 1.6, marginBottom: 26 }}>
-            Computer Science graduate delivering high-impact backend systems at scale.
+          <p style={{ fontFamily: FONTS.body, fontSize: 17.5, color: C.inkSoft, maxWidth: 540, lineHeight: 1.6, marginBottom: 22 }}>
+            Creator of <strong>Trulin</strong> (AI agent evaluation & decision gate platform) and backend engineer with production experience in ClickHouse query optimization, A/B testing analytics, and high-performance distributed systems.
           </p>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Pill bg={C.green}>GRADUATE</Pill>
-            <Pill bg={C.cyan}>BACKEND ENGINEER </Pill>
-            <Pill bg={C.blue} color="#fff">DEVELOPER</Pill>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 26 }}>
+            <Pill bg={C.yellow}>CREATOR OF TRULIN</Pill>
+            <Pill bg={C.purple} color="#fff">AGENT GUARDRAILS & MCP</Pill>
+            <Pill bg={C.cyan}>CLICKHOUSE & CORE JAVA</Pill>
+            <Pill bg={C.green}>FASTAPI & DISTRIBUTED SYSTEMS</Pill>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+            <a
+              href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("projects");
+                if (el) {
+                  const y = el.getBoundingClientRect().top + window.pageYOffset - 88;
+                  window.scrollTo({ top: y, behavior: "smooth" });
+                }
+              }}
+              className="project-link-btn"
+              style={{
+                fontFamily: FONTS.body,
+                fontWeight: 700,
+                fontSize: 14.5,
+                background: C.yellow,
+                color: C.ink,
+                padding: "10px 22px",
+                borderRadius: 12,
+                border: `2.5px solid ${C.ink}`,
+                boxShadow: `3px 3px 0px ${C.ink}`,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span>Explore Flagship (Trulin)</span>
+              <span>↓</span>
+            </a>
+            <a
+              href="https://medium.com/@prasannasimha5002/why-semantic-search-isnt-enough-when-ai-agents-can-take-actions-8d1219c7bb38"
+              target="_blank"
+              rel="noreferrer"
+              className="project-link-btn"
+              style={{
+                fontFamily: FONTS.body,
+                fontWeight: 700,
+                fontSize: 14.5,
+                background: "#fff",
+                color: C.ink,
+                padding: "10px 20px",
+                borderRadius: 12,
+                border: `2.5px solid ${C.ink}`,
+                boxShadow: `3px 3px 0px ${C.ink}`,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span>Read Architecture Thesis</span>
+              <ExternalLinkIcon size={14} />
+            </a>
+            <a
+              href={PROFILE.resume}
+              target="_blank"
+              rel="noreferrer"
+              className="project-link-btn"
+              style={{
+                fontFamily: FONTS.body,
+                fontWeight: 700,
+                fontSize: 14.5,
+                background: C.pink,
+                color: C.ink,
+                padding: "10px 20px",
+                borderRadius: 12,
+                border: `2.5px solid ${C.ink}`,
+                boxShadow: `3px 3px 0px ${C.ink}`,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span>Resume (PDF)</span>
+              <ExternalLinkIcon size={14} />
+            </a>
           </div>
         </div>
         <div
@@ -579,9 +776,55 @@ function About() {
 
         <Reveal delay={80}>
           <BrutalCard style={{ padding: "26px 28px", maxWidth: 760, margin: "0 auto 26px" }}>
-            <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.blue, marginBottom: 10, textAlign: "center" }}>VALUE</div>
+            <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.blue, marginBottom: 10, textAlign: "center" }}>VALUE & PRODUCT SENSE</div>
             <p style={{ fontFamily: FONTS.body, fontSize: 16, color: C.ink, lineHeight: 1.6, margin: 0, textAlign: "justify", textAlignLast: "left" }}>{PROFILE.aboutValue}</p>
           </BrutalCard>
+        </Reveal>
+
+        {/* System Design Trade-Offs Matrix */}
+        <Reveal delay={100}>
+          <div style={{ maxWidth: 900, margin: "0 auto 28px" }}>
+            <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.blue, marginBottom: 14, textAlign: "center", textTransform: "uppercase" }}>
+              Core Engineering Trade-Offs
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18, textAlign: "left" }} className="tradeoffs-grid">
+              <BrutalCard bg={C.yellow} style={{ padding: 20 }}>
+                <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 11, letterSpacing: 1.2, color: C.ink, textTransform: "uppercase", marginBottom: 6 }}>
+                  Trade-off 01
+                </div>
+                <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 17, color: C.ink, marginBottom: 8 }}>
+                  Latency vs. Accuracy
+                </div>
+                <p style={{ fontFamily: FONTS.body, fontSize: 13.5, color: C.ink, lineHeight: 1.55, margin: 0, opacity: 0.9 }}>
+                  Sub-second deterministic verification (SPO triples) and 20ms lexical-semantic matching without incurring costly LLM re-ranking latency on critical paths.
+                </p>
+              </BrutalCard>
+
+              <BrutalCard bg={C.cyan} style={{ padding: 20 }}>
+                <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 11, letterSpacing: 1.2, color: C.ink, textTransform: "uppercase", marginBottom: 6 }}>
+                  Trade-off 02
+                </div>
+                <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 17, color: C.ink, marginBottom: 8 }}>
+                  Cost vs. Precision
+                </div>
+                <p style={{ fontFamily: FONTS.body, fontSize: 13.5, color: C.ink, lineHeight: 1.55, margin: 0, opacity: 0.9 }}>
+                  Preventing hallucination and policy violations at the decision gate before autonomous tool calls execute, saving multi-turn token spend and rollback costs.
+                </p>
+              </BrutalCard>
+
+              <BrutalCard bg={C.green} style={{ padding: 20 }}>
+                <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 11, letterSpacing: 1.2, color: C.ink, textTransform: "uppercase", marginBottom: 6 }}>
+                  Trade-off 03
+                </div>
+                <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 17, color: C.ink, marginBottom: 8 }}>
+                  Throughput vs. Scan Depth
+                </div>
+                <p style={{ fontFamily: FONTS.body, fontSize: 13.5, color: C.ink, lineHeight: 1.55, margin: 0, opacity: 0.9 }}>
+                  Optimizing ClickHouse queries with PREWHERE pushdown, column pruning, and caching to slash scanned data by 35% and execution time by 50%.
+                </p>
+              </BrutalCard>
+            </div>
+          </div>
         </Reveal>
 
         <Reveal delay={120}>
@@ -693,13 +936,35 @@ function Experience() {
                 <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 13, color: C.inkSoft, marginBottom: 10 }}>
                   {e.duration}
                 </div>
-                <BrutalCard style={{ padding: "24px 26px" }} className="timeline-card">
+                <BrutalCard style={{ padding: "26px 28px" }} className="timeline-card">
                   <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 20, color: C.ink, marginBottom: 4 }}>
                     {e.role}
                   </div>
-                  <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 14, color: C.blue, marginBottom: 14 }}>
+                  <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 14, color: C.blue, marginBottom: 12 }}>
                     {e.company}
                   </div>
+                  {e.highlights && (
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+                      {e.highlights.map((h) => (
+                        <span
+                          key={h}
+                          style={{
+                            fontFamily: FONTS.body,
+                            fontWeight: 700,
+                            fontSize: 12,
+                            background: "#fff",
+                            color: C.ink,
+                            border: `2px solid ${C.ink}`,
+                            borderRadius: 8,
+                            padding: "3px 10px",
+                            boxShadow: `2px 2px 0px ${C.ink}`,
+                          }}
+                        >
+                          {h}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <ul style={{ margin: 0, paddingLeft: 20, color: C.inkSoft, fontFamily: FONTS.body, fontSize: 14.5, lineHeight: 1.7 }}>
                     {e.bullets.map((b, bi) => (
                       <li key={bi} style={{ marginBottom: 6 }}>{b}</li>
@@ -748,26 +1013,177 @@ function Projects() {
     <section id="projects" style={styles.section}>
       <div style={styles.wrap}>
         <Reveal>
-          <Eyebrow>Things I've Built</Eyebrow>
-          <SectionTitle>Projects</SectionTitle>
-          <p style={{ ...styles.body, maxWidth: 700, marginBottom: 30 }}>
-            A selection of work showing how I solve real problems — each entry calls out the stack and the outcome.
+          <Eyebrow>Engineering Showcase</Eyebrow>
+          <SectionTitle>Featured Projects</SectionTitle>
+          <p style={{ ...styles.body, maxWidth: 720, marginBottom: 30 }}>
+            Systems and platforms engineered for verifiability, sub-second latency, and high concurrency — each entry details architectural decisions and measurable outcomes.
           </p>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }} className="project-grid">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 26 }} className="project-grid">
           {PROJECTS.map((p, i) => (
             <Reveal key={p.name} delay={i * 70}>
-              <BrutalCard style={{ overflow: "hidden" }} className="project-card">
-                <div style={{ height: 130, background: p.color, borderBottom: `2.5px solid ${C.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 15, color: C.ink, background: "#fff", border: `2px solid ${C.ink}`, borderRadius: 999, padding: "6px 16px", textAlign: "center" }}>
-                    {p.metric}
-                  </span>
+              <BrutalCard
+                style={{
+                  overflow: "hidden",
+                  gridColumn: p.isFlagship ? "1 / -1" : undefined,
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+                className={`project-card ${p.isFlagship ? "flagship-card" : ""}`}
+              >
+                {/* Header Banner */}
+                <div
+                  style={{
+                    height: p.isFlagship ? 110 : 130,
+                    background: p.color,
+                    borderBottom: `2.5px solid ${C.ink}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "0 24px",
+                    flexWrap: "wrap",
+                    gap: 10,
+                  }}
+                >
+                  {p.isFlagship ? (
+                    <>
+                      <span
+                        style={{
+                          fontFamily: FONTS.body,
+                          fontWeight: 800,
+                          fontSize: 12.5,
+                          letterSpacing: 1.5,
+                          color: C.ink,
+                          background: C.yellow,
+                          border: `2px solid ${C.ink}`,
+                          borderRadius: 8,
+                          padding: "6px 14px",
+                          boxShadow: `2px 2px 0px ${C.ink}`,
+                        }}
+                      >
+                        ⭐ {p.badge}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: FONTS.display,
+                          fontWeight: 700,
+                          fontSize: 14.5,
+                          color: C.ink,
+                          background: "#fff",
+                          border: `2px solid ${C.ink}`,
+                          borderRadius: 999,
+                          padding: "6px 16px",
+                        }}
+                      >
+                        ⚡ {p.metric}
+                      </span>
+                    </>
+                  ) : (
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                      <span
+                        style={{
+                          fontFamily: FONTS.display,
+                          fontWeight: 700,
+                          fontSize: 15,
+                          color: C.ink,
+                          background: "#fff",
+                          border: `2px solid ${C.ink}`,
+                          borderRadius: 999,
+                          padding: "6px 16px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {p.metric}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div style={{ padding: 22 }}>
+
+                {/* Content Body */}
+                <div style={{ padding: p.isFlagship ? "26px 28px" : 22, display: "flex", flexDirection: "column", flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                    <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 19, color: C.ink, lineHeight: 1.3 }}>{p.name}</div>
-                    {(p.github || p.live) && (
-                      <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+                    <div>
+                      <div
+                        style={{
+                          fontFamily: FONTS.display,
+                          fontWeight: 700,
+                          fontSize: p.isFlagship ? "clamp(1.35rem, 3vw, 1.7rem)" : 19,
+                          color: C.ink,
+                          lineHeight: 1.25,
+                        }}
+                      >
+                        {p.name}
+                      </div>
+                      {p.isFlagship && (
+                        <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 13.5, color: C.blue, marginTop: 4 }}>
+                          Autonomous Agent Evaluation, Ground-Truth Interception & Conflict Detection
+                        </div>
+                      )}
+                    </div>
+
+                    {(p.github || p.live || p.blog || p.blogs) && (
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+                        {p.blogs ? (
+                          p.blogs.map((bl) => (
+                            <a
+                              key={bl.url}
+                              href={bl.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              title={bl.label}
+                              aria-label={`${p.name} - ${bl.label}`}
+                              className="project-link-btn"
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "6px 12px",
+                                borderRadius: 8,
+                                border: `2px solid ${C.ink}`,
+                                background: bl.bg || C.cyan,
+                                color: C.ink,
+                                boxShadow: `2px 2px 0px ${C.ink}`,
+                                textDecoration: "none",
+                                cursor: "pointer",
+                                fontFamily: FONTS.body,
+                                fontWeight: 700,
+                                fontSize: 12.5,
+                              }}
+                            >
+                              <span>{bl.label}</span>
+                              <ExternalLinkIcon size={13} />
+                            </a>
+                          ))
+                        ) : p.blog ? (
+                          <a
+                            href={p.blog}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="Read Medium Architecture Deep Dive"
+                            aria-label={`${p.name} Architecture Post`}
+                            className="project-link-btn"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              padding: "6px 12px",
+                              borderRadius: 8,
+                              border: `2px solid ${C.ink}`,
+                              background: C.cyan,
+                              color: C.ink,
+                              boxShadow: `2px 2px 0px ${C.ink}`,
+                              textDecoration: "none",
+                              cursor: "pointer",
+                              fontFamily: FONTS.body,
+                              fontWeight: 700,
+                              fontSize: 12.5,
+                            }}
+                          >
+                            <span>Read Thesis</span>
+                            <ExternalLinkIcon size={13} />
+                          </a>
+                        ) : null}
                         {p.github && (
                           <a
                             href={p.github}
@@ -823,8 +1239,20 @@ function Projects() {
                       </div>
                     )}
                   </div>
-                  <p style={{ fontFamily: FONTS.body, fontSize: 14, color: C.inkSoft, lineHeight: 1.6, margin: "10px 0 14px" }}>{p.desc}</p>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+
+                  <p style={{ fontFamily: FONTS.body, fontSize: 14.5, color: C.inkSoft, lineHeight: 1.6, margin: "12px 0 14px" }}>
+                    {p.desc}
+                  </p>
+
+                  {p.bullets && (
+                    <ul style={{ margin: "0 0 16px", paddingLeft: 20, color: C.inkSoft, fontFamily: FONTS.body, fontSize: 14, lineHeight: 1.65 }}>
+                      {p.bullets.map((b, bi) => (
+                        <li key={bi} style={{ marginBottom: 6 }}>{b}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto", paddingTop: 10 }}>
                     {p.stack.map((s) => (
                       <Pill key={s}>{s}</Pill>
                     ))}
@@ -1634,7 +2062,7 @@ function Contact() {
             <div style={{ fontFamily: FONTS.body, fontSize: 15, color: C.inkSoft, marginBottom: 22 }}>
               Phone: <span style={{ color: C.ink, fontWeight: 600 }}>{PROFILE.phone}</span>
             </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 26 }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 22 }}>
               <a href={PROFILE.linkedin} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>LINKEDIN</Pill>
               </a>
@@ -1644,8 +2072,37 @@ function Contact() {
               <a href={PROFILE.medium} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>MEDIUM</Pill>
               </a>
+              <a href={PROFILE.resume} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                <Pill bg={C.pink}>RESUME (PDF) ↗</Pill>
+              </a>
               <a href={`mailto:${PROFILE.email}`} style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>EMAIL</Pill>
+              </a>
+            </div>
+            <div style={{ marginBottom: 24 }}>
+              <a
+                href={PROFILE.resume}
+                target="_blank"
+                rel="noreferrer"
+                className="project-link-btn"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontFamily: FONTS.body,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  background: C.yellow,
+                  color: C.ink,
+                  border: `2px solid ${C.ink}`,
+                  borderRadius: 10,
+                  padding: "9px 18px",
+                  boxShadow: `3px 3px 0px ${C.ink}`,
+                  textDecoration: "none",
+                }}
+              >
+                <span>View Full Resume (PDF)</span>
+                <ExternalLinkIcon size={14} />
               </a>
             </div>
             <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.inkSoft, marginBottom: 12 }}>
@@ -1850,6 +2307,7 @@ export default function Portfolio() {
         @media (max-width: 860px) {
           .hero-grid { grid-template-columns: 1fr !important; }
           .hero-grid > div:last-child { order: -1; }
+          .tradeoffs-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: 1fr 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
           .git-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -1874,6 +2332,7 @@ export default function Portfolio() {
           .nav-inner { padding: 14px 16px !important; }
           .hero-section { padding: 40px 0 32px !important; }
           section { padding: 40px 0 !important; }
+          .tradeoffs-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
           .project-grid { grid-template-columns: 1fr !important; }
