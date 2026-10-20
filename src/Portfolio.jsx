@@ -175,63 +175,76 @@ const EDUCATION = {
   status: "Graduated 2026",
 };
 
+const TRULIN_PROJECT = {
+  name: "Trulin",
+  subtitle: "Context Trust Layer & Real-Time Decision Gate",
+  metric: "< 200ms Decision Gate",
+  badge: "FLAGSHIP PLATFORM",
+  desc: "An evaluation and governance gate that intercepts autonomous AI agent tool calls in real time, validating candidate actions against verified ground-truth claims to eliminate hallucinations and policy violations before execution.",
+  specs: [
+    {
+      title: "Deterministic SPO Conflict Engine",
+      desc: "Deconstructs unstructured context into verifiable Subject-Predicate-Object triples to detect factual contradictions.",
+    },
+    {
+      title: "Model Context Protocol (MCP) Client",
+      desc: "Standardized tool-call interception proxy gating actions before state-altering execution.",
+    },
+    {
+      title: "Sub-Second Decision Latency",
+      desc: "Relational verification and async Redis caching enforcing p95 response times under 200ms.",
+    },
+  ],
+  stack: ["FastAPI", "Python", "React", "PostgreSQL", "Redis", "Docker", "MCP"],
+  github: "https://github.com/spk-2005",
+  blogs: [
+    {
+      label: "Atomic Claims Thesis",
+      url: "https://medium.com/@prasannasimha5002/how-trulin-turns-messy-documents-into-atomic-verifiable-claims-0a1eaffb9b65",
+      bg: C.yellow,
+    },
+    {
+      label: "Agent Verifiability",
+      url: "https://medium.com/@prasannasimha5002/why-semantic-search-isnt-enough-when-ai-agents-can-take-actions-8d1219c7bb38",
+      bg: C.cyan,
+    },
+  ],
+};
+
 const PROJECTS = [
   {
-    name: "Trulin (Context Trust Layer)",
-    metric: "Sub-Second Decision Latency",
-    color: C.blue,
-    badge: "FLAGSHIP PROJECT",
-    isFlagship: true,
-    desc: "Autonomous AI agent evaluation & provenance platform that intercepts agent tool calls in real time, validating candidate actions against verified ground-truth knowledge stores before execution.",
-    bullets: [
-      "Built a deterministic Decision Evaluator & Conflict Engine in Python/FastAPI extracting atomic claims (Subject-Predicate-Object triples) to prevent hallucinations & policy violations.",
-      "Engineered an interactive React dashboard with an Agent Chat Playground, Live Scenario Simulator, and Model Context Protocol (MCP) client to benchmark agent decision traces.",
-      "Implemented relational modeling, Redis caching, and asynchronous evaluation pipelines to enforce sub-second decision latency."
-    ],
-    stack: ["FastAPI", "Python", "React", "PostgreSQL", "Redis", "Docker", "MCP"],
-    github: "https://github.com/spk-2005",
-    blogs: [
-      {
-        label: "Atomic Claims Thesis",
-        url: "https://medium.com/@prasannasimha5002/how-trulin-turns-messy-documents-into-atomic-verifiable-claims-0a1eaffb9b65",
-        bg: C.yellow,
-      },
-      {
-        label: "Agent Verifiability",
-        url: "https://medium.com/@prasannasimha5002/why-semantic-search-isnt-enough-when-ai-agents-can-take-actions-8d1219c7bb38",
-        bg: C.cyan,
-      },
-    ],
-  },
-  {
-    name: "JD-Aware ATS Semantic Evaluation Engine",
+    name: "JD-Aware ATS Semantic Engine",
+    category: "Semantic Search & NLP",
     metric: "20 ms p95 latency",
     color: C.purple,
-    desc: "High-performance evaluation backend that computes semantic alignment between resumes and job descriptions using BM25+ and TF-IDF lexical matching algorithms, benchmarked across varying document lengths.",
+    desc: "High-performance evaluation backend that computes semantic alignment between resumes and job descriptions using BM25+ and TF-IDF lexical matching algorithms.",
     stack: ["FastAPI", "Python", "PostgreSQL", "BM25+", "TF-IDF"],
     github: "https://github.com/spk-2005/resume-api",
   },
   {
-    name: "Online Exam Portal (Scale & Concurrency)",
-    metric: "₹100K+ revenue | 1,000+ users",
+    name: "Online Exam Assessment Portal",
+    category: "Concurrency & Scale",
+    metric: "1K+ Users · ₹100K+ Rev",
     color: C.green,
-    desc: "Scalable assessment backend supporting 1,000+ concurrent test-takers, with secure REST APIs, JWT authentication, administrative review workflows, and automated CI/CD validation pipelines.",
-    stack: ["Node.js", "React", "TypeScript", "MongoDB", "JWT", "GitHub Actions"],
+    desc: "Scalable assessment backend supporting 1,000+ concurrent test-takers, with secure REST APIs, JWT authentication, and automated CI/CD validation pipelines.",
+    stack: ["Node.js", "React", "TypeScript", "MongoDB", "JWT"],
     github: "https://github.com/spk-2005/online-exam-departmental-test",
     live: "https://departmental-tests.netlify.app/",
   },
   {
-    name: "Machine Unlearning: Ethical Forgetting",
-    metric: "72% → 12% attack success",
+    name: "Machine Unlearning Defense",
+    category: "Deep Learning & Defense",
+    metric: "72% → 12% Attack Success",
     color: C.orange,
-    desc: "Dual-branch CNN reaching 97.9% accuracy while sharply mitigating membership inference attacks and reducing training time from 120 to 18 minutes using MGDA multi-objective optimization.",
-    stack: ["Python", "CNN", "MGDA Optimization", "Deep Learning"],
+    desc: "Dual-branch CNN reaching 97.9% accuracy while sharply mitigating membership inference attacks and reducing training time from 120 to 18 min via MGDA optimization.",
+    stack: ["Python", "CNN", "MGDA", "Deep Learning"],
   },
   {
-    name: "RVRBot — Contextual College Chatbot",
-    metric: "Real-time responses",
+    name: "RVRBot — Campus Knowledge Chatbot",
+    category: "Conversational Search",
+    metric: "Real-time Responses",
     color: C.cyan,
-    desc: "NLP-powered chatbot using TF-IDF semantic search, intent detection, and Levenshtein-based spell correction for context-aware queries and campus information retrieval.",
+    desc: "Context-aware college chatbot using TF-IDF semantic search, intent detection, and Levenshtein spell correction for fast campus information retrieval.",
     stack: ["React.js", "Node.js", "Express.js", "NLP"],
     github: "https://github.com/spk-2005/chatbot",
   },
@@ -1015,175 +1028,386 @@ function Projects() {
         <Reveal>
           <Eyebrow>Engineering Showcase</Eyebrow>
           <SectionTitle>Featured Projects</SectionTitle>
-          <p style={{ ...styles.body, maxWidth: 720, marginBottom: 30 }}>
-            Systems and platforms engineered for verifiability, sub-second latency, and high concurrency — each entry details architectural decisions and measurable outcomes.
+          <p style={{ ...styles.body, maxWidth: 740, marginBottom: 32 }}>
+            Production platforms, agent governance infrastructure, and high-concurrency systems engineered for verifiability, sub-second latency, and measurable outcomes.
           </p>
         </Reveal>
+
+        {/* ── FLAGSHIP SPOTLIGHT: TRULIN ── */}
+        <Reveal>
+          <BrutalCard
+            style={{
+              overflow: "hidden",
+              marginBottom: 38,
+              display: "flex",
+              flexDirection: "column",
+            }}
+            className="project-card trulin-spotlight"
+          >
+            {/* Spotlight Accent Top Bar */}
+            <div
+              style={{
+                minHeight: 52,
+                background: C.blue,
+                borderBottom: `2.5px solid ${C.ink}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 24px",
+                flexWrap: "wrap",
+                gap: 12,
+              }}
+              className="trulin-topbar"
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    fontFamily: FONTS.body,
+                    fontWeight: 800,
+                    fontSize: 12,
+                    letterSpacing: 1.5,
+                    color: C.ink,
+                    background: C.yellow,
+                    border: `2px solid ${C.ink}`,
+                    borderRadius: 8,
+                    padding: "5px 12px",
+                    boxShadow: `2px 2px 0px ${C.ink}`,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  ⭐ {TRULIN_PROJECT.badge}
+                </span>
+                <span
+                  style={{
+                    fontFamily: FONTS.display,
+                    fontWeight: 700,
+                    fontSize: 13.5,
+                    color: C.ink,
+                    background: "#fff",
+                    border: `2px solid ${C.ink}`,
+                    borderRadius: 999,
+                    padding: "4px 14px",
+                    boxShadow: `1.5px 1.5px 0px ${C.ink}`,
+                  }}
+                >
+                  ⚡ {TRULIN_PROJECT.metric}
+                </span>
+              </div>
+
+              {/* Action Links */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                {TRULIN_PROJECT.blogs.map((b) => (
+                  <a
+                    key={b.url}
+                    href={b.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`Read ${b.label} on Medium`}
+                    aria-label={`Trulin - ${b.label}`}
+                    className="project-link-btn"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "6px 12px",
+                      borderRadius: 8,
+                      border: `2px solid ${C.ink}`,
+                      background: b.bg,
+                      color: C.ink,
+                      boxShadow: `2px 2px 0px ${C.ink}`,
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      fontFamily: FONTS.body,
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                    }}
+                  >
+                    <span>{b.label}</span>
+                    <ExternalLinkIcon size={12.5} />
+                  </a>
+                ))}
+                {TRULIN_PROJECT.github && (
+                  <a
+                    href={TRULIN_PROJECT.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="View GitHub Repository"
+                    aria-label="Trulin GitHub"
+                    className="project-link-btn"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "6px 12px",
+                      borderRadius: 8,
+                      border: `2px solid ${C.ink}`,
+                      background: "#fff",
+                      color: C.ink,
+                      boxShadow: `2px 2px 0px ${C.ink}`,
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      fontFamily: FONTS.body,
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                    }}
+                  >
+                    <GithubIcon size={14} />
+                    <span>Code</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Spotlight Body */}
+            <div
+              className="trulin-grid"
+              style={{
+                padding: "30px 32px",
+                display: "grid",
+                gridTemplateColumns: "1.25fr 1fr",
+                gap: 32,
+                alignItems: "center",
+              }}
+            >
+              {/* Left Column: Minimal Core Info */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <h3
+                    style={{
+                      fontFamily: FONTS.display,
+                      fontWeight: 800,
+                      fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)",
+                      color: C.ink,
+                      margin: 0,
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    {TRULIN_PROJECT.name}
+                  </h3>
+                  <div
+                    style={{
+                      fontFamily: FONTS.body,
+                      fontWeight: 700,
+                      fontSize: 14.5,
+                      color: C.blue,
+                      marginTop: 4,
+                    }}
+                  >
+                    {TRULIN_PROJECT.subtitle}
+                  </div>
+                </div>
+
+                <p
+                  style={{
+                    fontFamily: FONTS.body,
+                    fontSize: 15,
+                    color: C.inkSoft,
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {TRULIN_PROJECT.desc}
+                </p>
+
+                {/* Tech Stack Pills */}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+                  {TRULIN_PROJECT.stack.map((s) => (
+                    <Pill key={s}>{s}</Pill>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Column: Architectural Highlights Box */}
+              <div
+                style={{
+                  background: "#F8F9FD",
+                  border: `2px solid ${C.ink}`,
+                  borderRadius: 14,
+                  padding: "20px 22px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 14,
+                  boxShadow: `3px 3px 0px ${C.ink}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: FONTS.body,
+                    fontWeight: 800,
+                    fontSize: 11.5,
+                    letterSpacing: 1.5,
+                    color: C.inkSoft,
+                    textTransform: "uppercase",
+                    borderBottom: `1.5px dashed ${C.grid}`,
+                    paddingBottom: 8,
+                  }}
+                >
+                  Key Architecture Capabilities
+                </div>
+
+                {TRULIN_PROJECT.specs.map((spec, idx) => (
+                  <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 22,
+                        height: 22,
+                        borderRadius: 6,
+                        background: idx === 0 ? C.yellow : idx === 1 ? C.cyan : C.green,
+                        border: `1.5px solid ${C.ink}`,
+                        fontSize: 11,
+                        fontWeight: 800,
+                        color: C.ink,
+                        flexShrink: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      {idx + 1}
+                    </span>
+                    <div style={{ fontSize: 13.5, lineHeight: 1.5, fontFamily: FONTS.body }}>
+                      <span style={{ fontWeight: 700, color: C.ink }}>{spec.title}</span>
+                      <span style={{ color: C.inkSoft }}> — {spec.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </BrutalCard>
+        </Reveal>
+
+        {/* ── SUB-HEADER: PRODUCTION SYSTEMS ── */}
+        <Reveal>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 20,
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: C.blue, border: `1.5px solid ${C.ink}` }} />
+              <span
+                style={{
+                  fontFamily: FONTS.body,
+                  fontWeight: 800,
+                  fontSize: 12.5,
+                  letterSpacing: 1.5,
+                  textTransform: "uppercase",
+                  color: C.ink,
+                }}
+              >
+                Production Backends & Applied Research
+              </span>
+            </div>
+            <span
+              style={{
+                fontFamily: FONTS.body,
+                fontWeight: 700,
+                fontSize: 12,
+                color: C.inkSoft,
+                background: "#F0F2F6",
+                padding: "4px 10px",
+                borderRadius: 6,
+                border: `1.5px solid ${C.ink}`,
+              }}
+            >
+              4 Engineering Systems
+            </span>
+          </div>
+        </Reveal>
+
+        {/* ── 2x2 BALANCED PRODUCTION GRID ── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 26 }} className="project-grid">
           {PROJECTS.map((p, i) => (
             <Reveal key={p.name} delay={i * 70}>
               <BrutalCard
                 style={{
                   overflow: "hidden",
-                  gridColumn: p.isFlagship ? "1 / -1" : undefined,
                   display: "flex",
                   flexDirection: "column",
                   height: "100%",
                 }}
-                className={`project-card ${p.isFlagship ? "flagship-card" : ""}`}
+                className="project-card"
               >
-                {/* Header Banner */}
+                {/* Sleek Top Banner (Height: 46px) */}
                 <div
                   style={{
-                    height: p.isFlagship ? 110 : 130,
+                    height: 46,
                     background: p.color,
                     borderBottom: `2.5px solid ${C.ink}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    padding: "0 24px",
-                    flexWrap: "wrap",
-                    gap: 10,
+                    padding: "0 18px",
                   }}
                 >
-                  {p.isFlagship ? (
-                    <>
-                      <span
-                        style={{
-                          fontFamily: FONTS.body,
-                          fontWeight: 800,
-                          fontSize: 12.5,
-                          letterSpacing: 1.5,
-                          color: C.ink,
-                          background: C.yellow,
-                          border: `2px solid ${C.ink}`,
-                          borderRadius: 8,
-                          padding: "6px 14px",
-                          boxShadow: `2px 2px 0px ${C.ink}`,
-                        }}
-                      >
-                        ⭐ {p.badge}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: FONTS.display,
-                          fontWeight: 700,
-                          fontSize: 14.5,
-                          color: C.ink,
-                          background: "#fff",
-                          border: `2px solid ${C.ink}`,
-                          borderRadius: 999,
-                          padding: "6px 16px",
-                        }}
-                      >
-                        ⚡ {p.metric}
-                      </span>
-                    </>
-                  ) : (
-                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                      <span
-                        style={{
-                          fontFamily: FONTS.display,
-                          fontWeight: 700,
-                          fontSize: 15,
-                          color: C.ink,
-                          background: "#fff",
-                          border: `2px solid ${C.ink}`,
-                          borderRadius: 999,
-                          padding: "6px 16px",
-                          textAlign: "center",
-                        }}
-                      >
-                        {p.metric}
-                      </span>
-                    </div>
-                  )}
+                  <span
+                    style={{
+                      fontFamily: FONTS.body,
+                      fontWeight: 800,
+                      fontSize: 11.5,
+                      letterSpacing: 1.2,
+                      textTransform: "uppercase",
+                      color: C.ink,
+                    }}
+                  >
+                    {p.category}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: FONTS.display,
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                      color: C.ink,
+                      background: "#fff",
+                      border: `1.5px solid ${C.ink}`,
+                      borderRadius: 999,
+                      padding: "3px 12px",
+                      boxShadow: `1.5px 1.5px 0px ${C.ink}`,
+                    }}
+                  >
+                    {p.metric}
+                  </span>
                 </div>
 
                 {/* Content Body */}
-                <div style={{ padding: p.isFlagship ? "26px 28px" : 22, display: "flex", flexDirection: "column", flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: FONTS.display,
-                          fontWeight: 700,
-                          fontSize: p.isFlagship ? "clamp(1.35rem, 3vw, 1.7rem)" : 19,
-                          color: C.ink,
-                          lineHeight: 1.25,
-                        }}
-                      >
-                        {p.name}
-                      </div>
-                      {p.isFlagship && (
-                        <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 13.5, color: C.blue, marginTop: 4 }}>
-                          Autonomous Agent Evaluation, Ground-Truth Interception & Conflict Detection
-                        </div>
-                      )}
-                    </div>
+                <div
+                  style={{
+                    padding: "22px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      gap: 12,
+                      marginBottom: 10,
+                    }}
+                  >
+                    <h4
+                      style={{
+                        fontFamily: FONTS.display,
+                        fontWeight: 700,
+                        fontSize: 19,
+                        color: C.ink,
+                        lineHeight: 1.3,
+                        margin: 0,
+                      }}
+                    >
+                      {p.name}
+                    </h4>
 
-                    {(p.github || p.live || p.blog || p.blogs) && (
-                      <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
-                        {p.blogs ? (
-                          p.blogs.map((bl) => (
-                            <a
-                              key={bl.url}
-                              href={bl.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              title={bl.label}
-                              aria-label={`${p.name} - ${bl.label}`}
-                              className="project-link-btn"
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 6,
-                                padding: "6px 12px",
-                                borderRadius: 8,
-                                border: `2px solid ${C.ink}`,
-                                background: bl.bg || C.cyan,
-                                color: C.ink,
-                                boxShadow: `2px 2px 0px ${C.ink}`,
-                                textDecoration: "none",
-                                cursor: "pointer",
-                                fontFamily: FONTS.body,
-                                fontWeight: 700,
-                                fontSize: 12.5,
-                              }}
-                            >
-                              <span>{bl.label}</span>
-                              <ExternalLinkIcon size={13} />
-                            </a>
-                          ))
-                        ) : p.blog ? (
-                          <a
-                            href={p.blog}
-                            target="_blank"
-                            rel="noreferrer"
-                            title="Read Medium Architecture Deep Dive"
-                            aria-label={`${p.name} Architecture Post`}
-                            className="project-link-btn"
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 6,
-                              padding: "6px 12px",
-                              borderRadius: 8,
-                              border: `2px solid ${C.ink}`,
-                              background: C.cyan,
-                              color: C.ink,
-                              boxShadow: `2px 2px 0px ${C.ink}`,
-                              textDecoration: "none",
-                              cursor: "pointer",
-                              fontFamily: FONTS.body,
-                              fontWeight: 700,
-                              fontSize: 12.5,
-                            }}
-                          >
-                            <span>Read Thesis</span>
-                            <ExternalLinkIcon size={13} />
-                          </a>
-                        ) : null}
+                    {(p.github || p.live) && (
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
                         {p.github && (
                           <a
                             href={p.github}
@@ -1196,8 +1420,8 @@ function Projects() {
                               display: "inline-flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              width: 34,
-                              height: 34,
+                              width: 32,
+                              height: 32,
                               borderRadius: 8,
                               border: `2px solid ${C.ink}`,
                               background: "#fff",
@@ -1207,7 +1431,7 @@ function Projects() {
                               cursor: "pointer",
                             }}
                           >
-                            <GithubIcon size={17} />
+                            <GithubIcon size={16} />
                           </a>
                         )}
                         {p.live && (
@@ -1222,8 +1446,8 @@ function Projects() {
                               display: "inline-flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              width: 34,
-                              height: 34,
+                              width: 32,
+                              height: 32,
                               borderRadius: 8,
                               border: `2px solid ${C.ink}`,
                               background: C.yellow,
@@ -1233,26 +1457,34 @@ function Projects() {
                               cursor: "pointer",
                             }}
                           >
-                            <ExternalLinkIcon size={17} />
+                            <ExternalLinkIcon size={16} />
                           </a>
                         )}
                       </div>
                     )}
                   </div>
 
-                  <p style={{ fontFamily: FONTS.body, fontSize: 14.5, color: C.inkSoft, lineHeight: 1.6, margin: "12px 0 14px" }}>
+                  <p
+                    style={{
+                      fontFamily: FONTS.body,
+                      fontSize: 14,
+                      color: C.inkSoft,
+                      lineHeight: 1.6,
+                      margin: "0 0 16px",
+                    }}
+                  >
                     {p.desc}
                   </p>
 
-                  {p.bullets && (
-                    <ul style={{ margin: "0 0 16px", paddingLeft: 20, color: C.inkSoft, fontFamily: FONTS.body, fontSize: 14, lineHeight: 1.65 }}>
-                      {p.bullets.map((b, bi) => (
-                        <li key={bi} style={{ marginBottom: 6 }}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto", paddingTop: 10 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      flexWrap: "wrap",
+                      marginTop: "auto",
+                      paddingTop: 8,
+                    }}
+                  >
                     {p.stack.map((s) => (
                       <Pill key={s}>{s}</Pill>
                     ))}
@@ -2309,6 +2541,8 @@ export default function Portfolio() {
           .hero-grid > div:last-child { order: -1; }
           .tradeoffs-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: 1fr 1fr !important; }
+          .trulin-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+          .trulin-topbar { padding: 12px 18px !important; }
           .project-grid { grid-template-columns: 1fr !important; }
           .git-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .git-feed-grid { grid-template-columns: 1fr !important; }
@@ -2335,6 +2569,8 @@ export default function Portfolio() {
           .tradeoffs-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
+          .trulin-grid { padding: 22px 16px !important; }
+          .trulin-topbar { padding: 10px 14px !important; }
           .project-grid { grid-template-columns: 1fr !important; }
           .git-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
