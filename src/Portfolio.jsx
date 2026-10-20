@@ -196,7 +196,6 @@ const TRULIN_PROJECT = {
     },
   ],
   stack: ["FastAPI", "Python", "React", "PostgreSQL", "Redis", "Docker", "MCP"],
-  github: "https://github.com/spk-2005",
   blogs: [
     {
       label: "Atomic Claims Thesis",
@@ -1126,35 +1125,6 @@ function Projects() {
                     <ExternalLinkIcon size={12.5} />
                   </a>
                 ))}
-                {TRULIN_PROJECT.github && (
-                  <a
-                    href={TRULIN_PROJECT.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="View GitHub Repository"
-                    aria-label="Trulin GitHub"
-                    className="project-link-btn"
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: "6px 12px",
-                      borderRadius: 8,
-                      border: `2px solid ${C.ink}`,
-                      background: "#fff",
-                      color: C.ink,
-                      boxShadow: `2px 2px 0px ${C.ink}`,
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      fontFamily: FONTS.body,
-                      fontWeight: 700,
-                      fontSize: 12.5,
-                    }}
-                  >
-                    <GithubIcon size={14} />
-                    <span>Code</span>
-                  </a>
-                )}
               </div>
             </div>
 
