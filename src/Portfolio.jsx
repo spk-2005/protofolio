@@ -51,7 +51,7 @@ const PROFILE = {
   domains: ["AI Agent Trust", "Context Provenance", "ClickHouse Analytics", "Distributed Backends"],
   keywords: [
     "Trulin", "Agent Guardrails", "Model Context Protocol (MCP)", "FastAPI", "Python",
-    "Java", "Spring Boot", "ClickHouse", "SQL PREWHERE", "Redis", "Docker", "PostgreSQL"
+    "Java", "Spring Boot", "ClickHouse", "SQL PREWHERE", "Redis", "Docker", "PostgreSQL", "YC LeadEngine", "OSINT Recon"
   ],
 };
 
@@ -211,6 +211,16 @@ const TRULIN_PROJECT = {
 };
 
 const PROJECTS = [
+  {
+    name: "LeadEngine — YC Startup Intel & Outreach",
+    category: "OSINT Recon & Cold Outreach",
+    metric: "6,000+ Startups Indexed",
+    color: C.yellow,
+    desc: "Autonomous intelligence engine that indexes 6,000+ YC companies across all batches. Discovers verified founder & recruiter contacts using zero-guessing OSINT (GitHub commits, ATS endpoints, X bios) with Google DoH MX-verification and 1-click native Gmail batch outreach.",
+    stack: ["Python", "OSINT Recon", "Google DoH", "REST APIs", "JavaScript", "SQLite"],
+    github: "https://github.com/spk-2005/YC_Details",
+    live: "https://yc-details.onrender.com/",
+  },
   {
     name: "JD-Aware ATS Semantic Engine",
     category: "Semantic Search & NLP",
@@ -1286,7 +1296,7 @@ function Projects() {
                 border: `1.5px solid ${C.ink}`,
               }}
             >
-              4 Engineering Systems
+              {PROJECTS.length} Engineering Systems
             </span>
           </div>
         </Reveal>
@@ -1498,6 +1508,16 @@ const FALLBACK_CONTRIB_STATS = {
 };
 
 const FALLBACK_EVENTS = [
+  {
+    id: "fb-0",
+    repo: "spk-2005/YC_Details",
+    branch: "main",
+    sha: "4a28f1b",
+    message: "feat: zero-guessing OSINT recon pipeline & 1-click YC batch outreach",
+    timeAgo: "just now",
+    date: "2026-10-22",
+    url: "https://github.com/spk-2005/YC_Details",
+  },
   {
     id: "fb-1",
     repo: "spk-2005/resume-api",
