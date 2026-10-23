@@ -327,9 +327,10 @@ function SectionTitle({ children }) {
   );
 }
 
-function Pill({ children, bg = "#fff", border = C.ink, color = C.ink }) {
+function Pill({ children, bg = "#fff", border = C.ink, color = C.ink, className = "" }) {
   return (
     <span
+      className={`brutal-pill ${className}`}
       style={{
         display: "inline-block",
         fontFamily: FONTS.body,
@@ -626,19 +627,25 @@ function Nav({ active }) {
           href={PROFILE.resume}
           target="_blank"
           rel="noreferrer"
+          onClick={() => setMenuOpen(false)}
           style={{
             fontFamily: FONTS.body,
             fontWeight: 700,
             fontSize: 15,
-            color: C.blue,
+            color: C.ink,
+            background: C.yellow,
+            border: `2px solid ${C.ink}`,
+            borderRadius: 8,
+            boxShadow: `2px 2px 0px ${C.ink}`,
             textDecoration: "none",
-            padding: "12px 4px",
+            padding: "10px 14px",
+            marginTop: 8,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <span>View Resume (PDF)</span>
+          <span>Resume (PDF)</span>
           <ExternalLinkIcon size={14} />
         </a>
       </div>
@@ -740,30 +747,6 @@ function Hero() {
               }}
             >
               <span>Read Architecture Thesis</span>
-              <ExternalLinkIcon size={14} />
-            </a>
-            <a
-              href={PROFILE.resume}
-              target="_blank"
-              rel="noreferrer"
-              className="project-link-btn"
-              style={{
-                fontFamily: FONTS.body,
-                fontWeight: 700,
-                fontSize: 14.5,
-                background: C.pink,
-                color: C.ink,
-                padding: "10px 20px",
-                borderRadius: 12,
-                border: `2.5px solid ${C.ink}`,
-                boxShadow: `3px 3px 0px ${C.ink}`,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <span>Resume (PDF)</span>
               <ExternalLinkIcon size={14} />
             </a>
           </div>
@@ -1004,26 +987,49 @@ function Experience() {
 
 function Education() {
   return (
-    <section style={styles.section}>
-      <div style={styles.wrap}>
+    <section id="education" style={styles.section}>
+      <div style={{ ...styles.wrap, textAlign: "center" }} className="portfolio-wrap">
         <Reveal>
           <Eyebrow>Where I Studied</Eyebrow>
           <SectionTitle>Education</SectionTitle>
         </Reveal>
         <Reveal delay={80}>
-          <BrutalCard bg={C.cyan} style={{ padding: 28, maxWidth: 640 }}>
-            <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 13, color: C.inkSoft, marginBottom: 10 }}>
-              {EDUCATION.date}
-            </div>
-            <div style={{ fontFamily: FONTS.display, fontWeight: 700, fontSize: 22, color: C.ink, marginBottom: 6 }}>
-              {EDUCATION.degree}
-            </div>
-            <div style={{ fontFamily: FONTS.body, fontSize: 15, color: C.ink, marginBottom: 16 }}>{EDUCATION.school}</div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Pill bg="#fff">{EDUCATION.gpa}</Pill>
-              <Pill bg="#fff">{EDUCATION.status}</Pill>
-            </div>
-          </BrutalCard>
+          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <BrutalCard
+              bg={C.cyan}
+              className="education-card"
+              style={{
+                padding: "28px 24px",
+                maxWidth: 640,
+                width: "100%",
+                margin: "0 auto",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 13, color: C.inkSoft, marginBottom: 10 }}>
+                {EDUCATION.date}
+              </div>
+              <div
+                style={{
+                  fontFamily: FONTS.display,
+                  fontWeight: 700,
+                  fontSize: "clamp(1.2rem, 3.5vw, 1.45rem)",
+                  color: C.ink,
+                  marginBottom: 8,
+                  lineHeight: 1.25,
+                }}
+              >
+                {EDUCATION.degree}
+              </div>
+              <div style={{ fontFamily: FONTS.body, fontSize: 15, color: C.ink, marginBottom: 16 }}>
+                {EDUCATION.school}
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+                <Pill bg="#fff">{EDUCATION.gpa}</Pill>
+                <Pill bg="#fff">{EDUCATION.status}</Pill>
+              </div>
+            </BrutalCard>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -2284,7 +2290,7 @@ function Contact() {
             <div style={{ fontFamily: FONTS.body, fontSize: 15, color: C.inkSoft, marginBottom: 22 }}>
               Phone: <span style={{ color: C.ink, fontWeight: 600 }}>{PROFILE.phone}</span>
             </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 22 }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
               <a href={PROFILE.linkedin} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>LINKEDIN</Pill>
               </a>
@@ -2299,32 +2305,6 @@ function Contact() {
               </a>
               <a href={`mailto:${PROFILE.email}`} style={{ textDecoration: "none" }}>
                 <Pill bg={C.yellow}>EMAIL</Pill>
-              </a>
-            </div>
-            <div style={{ marginBottom: 24 }}>
-              <a
-                href={PROFILE.resume}
-                target="_blank"
-                rel="noreferrer"
-                className="project-link-btn"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  fontFamily: FONTS.body,
-                  fontWeight: 700,
-                  fontSize: 14,
-                  background: C.yellow,
-                  color: C.ink,
-                  border: `2px solid ${C.ink}`,
-                  borderRadius: 10,
-                  padding: "9px 18px",
-                  boxShadow: `3px 3px 0px ${C.ink}`,
-                  textDecoration: "none",
-                }}
-              >
-                <span>View Full Resume (PDF)</span>
-                <ExternalLinkIcon size={14} />
               </a>
             </div>
             <div style={{ fontFamily: FONTS.body, fontWeight: 700, fontSize: 12, letterSpacing: 1.5, color: C.inkSoft, marginBottom: 12 }}>
@@ -2525,8 +2505,23 @@ export default function Portfolio() {
           }
         }
 
-        /* ── Tablet & small desktop ── */
-        @media (max-width: 860px) {
+        .brutal-pill {
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+        a:hover .brutal-pill,
+        a:focus-visible .brutal-pill {
+          transform: translate(-2px, -2px);
+          box-shadow: 3px 3px 0px ${C.ink};
+        }
+        a:active .brutal-pill {
+          transform: translate(0px, 0px);
+          box-shadow: 1px 1px 0px ${C.ink};
+        }
+
+        /* ── Tablet & small desktop (collapses nav smoothly) ── */
+        @media (max-width: 880px) {
+          .nav-links-desktop { display: none !important; }
+          .nav-toggle { display: flex !important; }
           .hero-grid { grid-template-columns: 1fr !important; }
           .hero-grid > div:last-child { order: -1; }
           .tradeoffs-grid { grid-template-columns: 1fr !important; }
@@ -2545,25 +2540,23 @@ export default function Portfolio() {
           .timeline-dot { left: -44px !important; width: 36px !important; height: 36px !important; font-size: 14px !important; top: 18px !important; }
         }
 
-        /* ── Nav collapses to hamburger below 720px ── */
-        @media (max-width: 720px) {
-          .nav-links-desktop { display: none !important; }
-          .nav-toggle { display: flex !important; }
-        }
-
         /* ── Phones ── */
         @media (max-width: 640px) {
+          section > div:first-child,
+          .portfolio-wrap { padding-left: 18px !important; padding-right: 18px !important; }
           .nav-inner { padding: 14px 16px !important; }
-          .hero-section { padding: 40px 0 32px !important; }
-          section { padding: 40px 0 !important; }
+          .hero-section { padding: 36px 0 28px !important; }
+          .hero-grid > div:last-child { max-width: 280px; margin: 0 auto; }
+          section { padding: 36px 0 !important; }
           .tradeoffs-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: 1fr !important; }
           .achieve-grid { grid-template-columns: 1fr !important; }
-          .trulin-grid { padding: 22px 16px !important; }
+          .trulin-grid { padding: 20px 16px !important; }
           .trulin-topbar { padding: 10px 14px !important; }
           .project-grid { grid-template-columns: 1fr !important; }
-          .git-stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .git-stats-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
+          .education-card { padding: 22px 18px !important; }
           .timeline { padding-left: 50px !important; }
           .timeline-rail { left: 10px !important; }
           .timeline-dot { left: -36px !important; width: 28px !important; height: 28px !important; font-size: 11px !important; top: 14px !important; }
@@ -2573,10 +2566,18 @@ export default function Portfolio() {
 
         /* ── Small Phones & Foldables ── */
         @media (max-width: 480px) {
+          section > div:first-child,
+          .portfolio-wrap { padding-left: 14px !important; padding-right: 14px !important; }
           .hero-section h1 { font-size: clamp(1.9rem, 7.5vw, 2.3rem) !important; }
-          .hero-section p { font-size: 15.5px !important; }
+          .hero-section p { font-size: 15px !important; }
+          .hero-grid > div:last-child { max-width: 220px; }
           .nav-inner > div:first-child { font-size: 17px !important; }
-          .contact-card h2 { font-size: 1.65rem !important; }
+          .contact-card h2 { font-size: 1.55rem !important; }
+          .timeline { padding-left: 42px !important; }
+          .timeline-rail { left: 8px !important; }
+          .timeline-dot { left: -32px !important; width: 24px !important; height: 24px !important; font-size: 10px !important; top: 14px !important; }
+          .education-card { padding: 20px 14px !important; }
+          .brutal-card { border-radius: 14px !important; }
         }
 
         .back-to-top-btn:hover {
